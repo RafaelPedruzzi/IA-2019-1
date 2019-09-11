@@ -67,4 +67,4 @@ def hill_Climbing():
         x, sn = state_Select(state_Expansion(cs))
     return cs
 
-print(hill_Climbing())
+# print(hill_Climbing())
