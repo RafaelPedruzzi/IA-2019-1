@@ -1,9 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercício 3: Branch and Bound
+#   Exercise 3: Branch and Bound
 #
 #   Rafael Belmock Pedruzzi
 #
-#   priorityQ.py: auxiliar que implementa uma fila de prioridade.
+#   priorityQ.py: implements a priority queue
 ## -------------------------------------------------------- ##
 
 import heapq
