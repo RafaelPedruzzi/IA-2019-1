@@ -3,7 +3,9 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   priorityQ.py: implements a priority queue
+#   priorityQ.py: implements a simple priority queue
+#
+#   Python version: 3.7.4
 ## -------------------------------------------------------- ##
 
 import heapq

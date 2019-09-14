@@ -2,13 +2,15 @@
 #   Exercise 1: Hill Climbing
 #
 #   Rafael Belmock Pedruzzi
+#
+#   Python version: 3.7.4
 ## -------------------------------------------------------- ##
 
 import bagProblem as bp
 
 # Returns True and the valid state with the biggest value, or False if no state is valid:
-def hc_Select(si):
-    sn = -1
+def select_Best(si):
+    sn = -1 # best state position
     sv = 0 # state value
     for i in range(len(si)):
         v = bp.state_Value(si[i]) # current value
@@ -22,10 +24,10 @@ def hc_Select(si):
 # Hill Climbing:
 def hill_Climbing():
     sn = [0]*len(bp.OBJs) # initial state
-    x = True
-    while x:
+    c = True # continue flag
+    while c:
         cs = sn # storing current state
-        x, sn = hc_Select(bp.state_Expansion(cs))
+        c, sn = select_Best(bp.state_Expansion(cs))
     return cs
 
 # print(hill_Climbing())

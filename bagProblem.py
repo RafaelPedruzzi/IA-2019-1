@@ -2,6 +2,8 @@
 #   Basic functions for the Bag Problem
 #
 #   Rafael Belmock Pedruzzi
+#
+#   Python version: 3.7.4
 ## -------------------------------------------------------- ##
 
 T = 19 # bag size

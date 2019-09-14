@@ -2,6 +2,8 @@
 #   Exercise 3: Branch and Bound
 #
 #   Rafael Belmock Pedruzzi
+#
+#   Python version: 3.7.4
 ## -------------------------------------------------------- ##
 
 import hillClimbing as hc
@@ -9,7 +11,7 @@ import bagProblem as bp
 import priorityQ as pq
 
 # Return a trivial solution to the problem:
-def triv_Solution():
+def triv_solution():
     return hc.hill_Climbing()
 
 # Optimistic estimate of status cost (Kelvin's algorithm):
@@ -37,10 +39,10 @@ def n_Opt_Estimate(status):
 
 # Branch and Bound:
 def branch_n_bound(use_opt_estimate=True):
-    solution = triv_Solution()
-    sv = bp.state_Value(solution) # value of best solution
+    bs = triv_solution()          # best state found
+    sv = bp.state_Value(bs)       # value of best bs
     pq.insert(0,[0]*len(bp.OBJs)) # pushing initial state in queue
-    while pq.isEmpty() == False:
+    while not pq.isEmpty():
         cs = pq.remove() # current state
         si = bp.state_Expansion(cs) # expansion of current state
         for s in si:
@@ -51,10 +53,10 @@ def branch_n_bound(use_opt_estimate=True):
                     est = n_Opt_Estimate(s)
                 if bp.state_Value(est) > sv:
                     if bp.state_Value(s) > sv:
-                        solution = s # updating best solution
+                        bs = s # updating best bs
                         sv = bp.state_Value(s) # updating best value
                     pq.insert(bp.state_Value(s),s)
-    return solution
+    return bs
 
-print("opt =", branch_n_bound())
-print("n opt =", branch_n_bound(False))
+print("optimist =", branch_n_bound())
+print("n optimist =", branch_n_bound(False))
