@@ -1,5 +1,5 @@
 ## -------------------------------------------------------- ##
-#   Exercise 7: Simulated Annealing
+#   Exercise 8: Simulated Annealing
 #
 #   Rafael Belmock Pedruzzi
 #
@@ -43,7 +43,7 @@ def sim_Annealing(s,temp,iter):
     alpha = random.random() # random value in [0,1]
     while temp > 1:
         si = neightborhood(s)
-        for i in range(iter):
+        for _ in range(iter):
             sn = take_Random(si)
             if bp.state_Value(sn) > bp.state_Value(s):
                 s = sn

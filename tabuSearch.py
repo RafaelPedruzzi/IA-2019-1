@@ -1,5 +1,5 @@
 ## -------------------------------------------------------- ##
-#   Exercise 5: Deepest Descent
+#   Exercise 7: Tabu Search
 #
 #   Rafael Belmock Pedruzzi
 #
@@ -7,6 +7,19 @@
 ## -------------------------------------------------------- ##
 
 import bagProblem as bp
+import tabuList as tl
+import random
+
+# Return a random item from the given list that is not on the tabu list and update the tabu list:
+def take_Random_Tabu(si, t):
+    for i in range(len(si)):
+        s = si[i]
+        if not t.is_in(s):
+            break
+    if s == []:
+        return []
+    t.insert(s)
+    return s
 
 # Returns True and the valid state with the biggest value, or False if no state is valid:
 def select_Best(si):
@@ -18,8 +31,8 @@ def select_Best(si):
             sv = v
             sn = i
     if sn == -1:
-        return False, []
-    return True, si[sn]
+        return []
+    return si[sn]
 
 # Return a neightborhood of the given state
 def neightborhood(s):
@@ -36,19 +49,27 @@ def neightborhood(s):
             neig.append(i)
     return neig
 
-# Deepent Descent:
-def deepest_Descent(s):
-    bs = s # best state found
+# Tabu Search:
+def tabu_Search(s, tsize, iter):
+    bs = s               # best state found 
+    ps = s               # previous state
+    t = tl.tabuList(tsize) # tabu list
+    t.insert(s)
     si = neightborhood(s)
-    c = True # continue flag
-    while c:
-        c, sn = select_Best(si)
-        if bp.state_Value(sn) > bp.state_Value(bs):
+    for _ in range(iter):
+        sn = select_Best(si)
+        if bp.state_Value(sn) < bp.state_Value(bs):
+            sn = take_Random_Tabu(neightborhood(ps),t)
+            # print(neightborhood(ps))
+            if sn == []:
+                break
+        if bp.state_Verify(sn) and bp.state_Value(sn) > bp.state_Value(bs):
             bs = sn
-            si = neightborhood(sn)
-        else:
-            break
+        si = neightborhood(sn)
+        ps = sn
     return bs
 
-# s = [0]*len(bp.OBJs)
-# print(deepest_Descent(s))
+iter = 50            # number of iterations
+tsize = 10           # max size of tabu list
+s = [0]*len(bp.OBJs) # initial state
+print(tabu_Search(s,tsize,iter))

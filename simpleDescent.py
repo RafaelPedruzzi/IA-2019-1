@@ -41,5 +41,5 @@ def simple_Descent(s):
             break # exiting if no better state is found
     return bs
 
-s = [0]*len(bp.OBJs)
-print(simple_Descent(s))
+# s = [0]*len(bp.OBJs)
+# print(simple_Descent(s))
