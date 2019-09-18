@@ -1,5 +1,5 @@
 ## -------------------------------------------------------- ##
-#   Exercise 8: Simulated Annealing
+#   Exercise 7: Simulated Annealing
 #
 #   Rafael Belmock Pedruzzi
 #
