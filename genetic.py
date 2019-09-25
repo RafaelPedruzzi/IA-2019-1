@@ -44,24 +44,43 @@ def init_Population(popMaxSize):
         pop.append(s)
     return pop
 
-# Generates a new population:
-def generate_New_Pop(si, elite):
+# Crossover operation:
+def crossover(s1, s2):
+    cut = random.randint(1,len(s1)-1)
+    child1 = s1[:cut] + s2[cut:]
+    child2 = s2[:cut] + s1[cut:]
+    return child1, child2
+
+# Mutation operation:
+def mutation(s):
+    for _ in random.randint(len(s)//4):
+        target = random.randint(len(s)-1)
+        if random.random() >= 0.5:
+            s[target] += 1
+        else:
+            s[target] -= 1
+    return s
 
 # Select the most fit individuals in the given population:
 def select_Most_Fit(si):
 
+# Generates a new population:
+def generate_New_Pop(si, crossoverRate, mutationRate):
+
 # Genetic Algorithm:
-def genetic(popMaxSize, iter):
+def genetic(popMaxSize, iter, crossoverRate, mutationRate):
     si = init_Population(popMaxSize)
     bs = [0]*len(bp.OBJs)
     for _ in range(iter):
-        ss = generate_New_Pop(select_Most_Fit(si), best_in_Pop(si))
+        ss = generate_New_Pop(si, crossoverRate, mutationRate)
         s = best_in_Pop(ss)
         if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
             bs = s
         si = ss
     return bs
 
+crossoverRate = 0.75
+mutationRate = 0.2
 iter = 50
 popMaxSize = 10
-#print(genetic(popMaxSize,iter))
+print(genetic(popMaxSize,iter))
