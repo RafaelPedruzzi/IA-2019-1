@@ -20,11 +20,11 @@ def select_Random(si):
         probRatio.append(bp.state_Value(s))
     ratSum = sum(probRatio)
     probRatio = [ (i/ratSum) for i in probRatio]
-    for i in probRatio:
-        propRatio[i] = sum(probRatio[:i])
+    for i in range(len(probRatio)):
+        probRatio[i] = sum(probRatio[:i])
     ratSum = sum(probRatio)
-    selector = random.random(ratSum)
-    for i in probRatio:
+    selector = random.randint(ratSum)
+    for i in range(len(probRatio)):
         if selector < probRatio[i]:
             s = si[i]
             break

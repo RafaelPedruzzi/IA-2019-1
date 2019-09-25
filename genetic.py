@@ -53,34 +53,52 @@ def crossover(s1, s2):
 
 # Mutation operation:
 def mutation(s):
-    for _ in random.randint(len(s)//4):
-        target = random.randint(len(s)-1)
+    for _ in range(random.randint(0, len(s)-1)):
+        target = random.randint(0, len(s)-1)
         if random.random() >= 0.5:
             s[target] += 1
-        else:
+        elif s[target] > 0:
             s[target] -= 1
     return s
 
-# Select the most fit individuals in the given population:
-def select_Most_Fit(si):
+# Select a random individual in the given population by the roulette method:
+def roulette(si):
+    scpy = si.copy()
+    scpy.sort(key = bp.state_Value)
+    probRatio = []
+    for s in scpy:
+        probRatio.append(bp.state_Value(s))
+    ratioSum = sum(probRatio)
+    probRatio = [ (i/ratioSum) for i in probRatio]
+    print(probRatio)
+    for i in range(len(probRatio)):
+        probRatio[i] = sum(probRatio[:i])
+    ratioSum = sum(probRatio)
+    selector = random.randint(0, ratioSum)
+    for i in range(len(probRatio)):
+        if selector < probRatio[i]:
+            s = scpy[i]
+            break
+    return s
 
 # Generates a new population:
-def generate_New_Pop(si, crossoverRate, mutationRate):
+# def generate_New_Pop(si, crossoverRate, mutationRate):
 
-# Genetic Algorithm:
-def genetic(popMaxSize, iter, crossoverRate, mutationRate):
-    si = init_Population(popMaxSize)
-    bs = [0]*len(bp.OBJs)
-    for _ in range(iter):
-        ss = generate_New_Pop(si, crossoverRate, mutationRate)
-        s = best_in_Pop(ss)
-        if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
-            bs = s
-        si = ss
-    return bs
+# # Genetic Algorithm:
+# def genetic(popMaxSize, iter, crossoverRate, mutationRate):
+#     si = init_Population(popMaxSize)
+#     bs = [0]*len(bp.OBJs)
+#     for _ in range(iter):
+#         ss = generate_New_Pop(si, crossoverRate, mutationRate)
+#         s = best_in_Pop(ss)
+#         if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
+#             bs = s
+#         si = ss
+#     return bs
 
 crossoverRate = 0.75
 mutationRate = 0.2
 iter = 50
 popMaxSize = 10
-print(genetic(popMaxSize,iter))
+# print(genetic(popMaxSize,iter))
+print(roulette([[1,2,3],[3,2,1],[5,6,7],[8,7,6]]))
