@@ -20,17 +20,9 @@ def fitness(s):
 def best_in_Pop(si):
     sn = 0 # best state index
     for i in range(len(si)):
-        if bp.state_Value(si[i]) > bp.state_Value(si[sn]):
+        if fitness(si[i]) > fitness(si[sn]):
             sn = i
     return si[sn]
-
-# Returns the index to the worse individual in the population:
-def worse_in_Pop(si):
-    sn = 0 # worse state index
-    for i in range(len(si)):
-        if bp.state_Value(si[i]) < bp.state_Value(si[sn]):
-            sn = i
-    return sn
 
 # Returns a initial population:
 def init_Population(popMaxSize):
@@ -63,42 +55,55 @@ def mutation(s):
 
 # Select a random individual in the given population by the roulette method:
 def roulette(si):
-    scpy = si.copy()
-    scpy.sort(key = bp.state_Value)
-    probRatio = []
-    for s in scpy:
+    probRatio = [] # roulette
+    # Adding all states's values to probRatio:
+    for s in si:
         probRatio.append(bp.state_Value(s))
+    # Normalizing the values:
     ratioSum = sum(probRatio)
     probRatio = [ (i/ratioSum) for i in probRatio]
-    print(probRatio)
+    # Building the "partitions" of the roulette:
     for i in range(len(probRatio)):
-        probRatio[i] = sum(probRatio[:i])
+        probRatio[i] = sum(probRatio[i:])
+    # Selecting a random element:
     ratioSum = sum(probRatio)
-    selector = random.randint(0, ratioSum)
+    selector = random.random()
     for i in range(len(probRatio)):
-        if selector < probRatio[i]:
-            s = scpy[i]
+        if selector >= probRatio[i]:
+            s = si[i]
             break
     return s
 
 # Generates a new population:
-# def generate_New_Pop(si, crossoverRate, mutationRate):
+def generate_New_Pop(si, crossoverRate, mutationRate):
+    elite = best_in_Pop(si)
+    snew = [elite]
+    while len(snew) < len(si):
+        s1 = roulette(si)
+        if random.random() < crossoverRate:
+            s2 = roulette(si)
+            s1, s2 = crossover(s1, s2)
+            snew.append(s2)
+            if len(snew) >= len(si):
+                break
+        if random.random() < mutationRate:
+            s1 = mutation(s1)
+        snew.append(s1)
+    return snew
 
-# # Genetic Algorithm:
-# def genetic(popMaxSize, iter, crossoverRate, mutationRate):
-#     si = init_Population(popMaxSize)
-#     bs = [0]*len(bp.OBJs)
-#     for _ in range(iter):
-#         ss = generate_New_Pop(si, crossoverRate, mutationRate)
-#         s = best_in_Pop(ss)
-#         if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
-#             bs = s
-#         si = ss
-#     return bs
+# Genetic Algorithm:
+def genetic(popMaxSize, iter, crossoverRate, mutationRate):
+    si = init_Population(popMaxSize)
+    bs = [0]*len(bp.OBJs)
+    for _ in range(iter):
+        si = generate_New_Pop(si, crossoverRate, mutationRate)
+        s = best_in_Pop(si)
+        if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
+            bs = s
+    return bs
 
 crossoverRate = 0.75
 mutationRate = 0.2
 iter = 50
 popMaxSize = 10
-# print(genetic(popMaxSize,iter))
-print(roulette([[1,2,3],[3,2,1],[5,6,7],[8,7,6]]))
+print(genetic(popMaxSize,iter,crossoverRate,mutationRate))

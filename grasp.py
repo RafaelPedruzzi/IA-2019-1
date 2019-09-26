@@ -14,18 +14,21 @@ def local_Search(s):
     return dp.deepest_Descent(s)
 
 def select_Random(si):
-    si.sort(key = bp.state_Value)
-    probRatio = []
+    probRatio = [] # roulette
+    # Adding all states's values to probRatio:
     for s in si:
         probRatio.append(bp.state_Value(s))
-    ratSum = sum(probRatio)
-    probRatio = [ (i/ratSum) for i in probRatio]
+    # Normalizing the values:
+    ratioSum = sum(probRatio)
+    probRatio = [ (i/ratioSum) for i in probRatio]
+    # Building the "partitions" of the roulette:
     for i in range(len(probRatio)):
-        probRatio[i] = sum(probRatio[:i])
-    ratSum = sum(probRatio)
-    selector = random.randint(ratSum)
+        probRatio[i] = sum(probRatio[i:])
+    # Selecting a random element:
+    ratioSum = sum(probRatio)
+    selector = random.random()
     for i in range(len(probRatio)):
-        if selector < probRatio[i]:
+        if selector >= probRatio[i]:
             s = si[i]
             break
     if bp.state_Verify(s):
@@ -49,5 +52,5 @@ def grasp(iter):
             bs = s
     return bs
 
-iter = 50
+iter = 10
 print(grasp(iter))
