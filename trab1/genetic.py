@@ -11,26 +11,26 @@ import random
 from math import floor
 
 # Objective function:
-def fitness(s):
-    if bp.state_Verify(s):
-        return bp.state_Value(s)
+def fitness(s, T, OBJs):
+    if bp.state_Verify(s, T, OBJs):
+        return bp.state_Value(s, OBJs)
     return 0
 
 # Returns the best individual in the population:
-def best_in_Pop(si):
+def best_in_Pop(si, T, OBJs):
     sn = 0 # best state index
     for i in range(len(si)):
-        if fitness(si[i]) > fitness(si[sn]):
+        if fitness(si[i], T, OBJs) > fitness(si[sn], T, OBJs):
             sn = i
     return si[sn]
 
 # Returns a initial population:
-def init_Population(popMaxSize):
+def init_Population(popMaxSize, OBJs):
     pop = []
     for _ in range(popMaxSize):
         s = []
-        for i in range(len(bp.OBJs)):
-            v = floor(bp.size(bp.OBJs[i]) * random.random())
+        for i in range(len(OBJs)):
+            v = floor(bp.size(OBJs[i]) * random.random())
             s.append(v)
         random.shuffle(s)
         pop.append(s)
@@ -54,11 +54,11 @@ def mutation(s):
     return s
 
 # Select a random individual in the given population by the roulette method:
-def roulette(si):
+def roulette(si, OBJs):
     probRatio = [] # roulette
     # Adding all states's values to probRatio:
     for s in si:
-        probRatio.append(bp.state_Value(s))
+        probRatio.append(bp.state_Value(s, OBJs))
     # Normalizing the values:
     ratioSum = sum(probRatio)
     probRatio = [ (i/ratioSum) for i in probRatio]
@@ -74,13 +74,13 @@ def roulette(si):
     return s
 
 # Generates a new population:
-def generate_New_Pop(si, crossoverRate, mutationRate):
-    elite = best_in_Pop(si)
+def generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs):
+    elite = best_in_Pop(si, T, OBJs)
     snew = [elite]
     while len(snew) < len(si):
-        s1 = roulette(si) # selecting a individual by the roulette method
+        s1 = roulette(si, OBJs) # selecting a individual by the roulette method
         if random.random() < crossoverRate: # crossover operation
-            s2 = roulette(si)
+            s2 = roulette(si, OBJs)
             s1, s2 = crossover(s1, s2)
             snew.append(s2)
             if len(snew) >= len(si): # breaking if population is full
@@ -91,18 +91,20 @@ def generate_New_Pop(si, crossoverRate, mutationRate):
     return snew
 
 # Genetic Algorithm:
-def genetic(popMaxSize, iter, crossoverRate, mutationRate):
-    si = init_Population(popMaxSize)
-    bs = [0]*len(bp.OBJs)
+def genetic(T, OBJs, popMaxSize, iter, crossoverRate, mutationRate):
+    si = init_Population(popMaxSize, OBJs)
+    bs = [0]*len(OBJs)
     for _ in range(iter):
-        si = generate_New_Pop(si, crossoverRate, mutationRate)
-        s = best_in_Pop(si)
-        if bp.state_Verify(s) and bp.state_Value(s) > bp.state_Value(bs):
+        si = generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs)
+        s = best_in_Pop(si, T, OBJs)
+        if bp.state_Verify(s, T, OBJs) and bp.state_Value(s, OBJs) > bp.state_Value(bs, OBJs):
             bs = s
     return bs
 
+T = 19 # bag size
+OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
 crossoverRate = 0.8
 mutationRate = 0.2
 iter = 50 # number of generations
 popMaxSize = 20 # size of the population
-print(genetic(popMaxSize,iter,crossoverRate,mutationRate))
+print(genetic(T,OBJs,popMaxSize,iter,crossoverRate,mutationRate))
