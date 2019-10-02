@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 8: Genetic Algorithm
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   genetic.py: implements the genetic algorithm heuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

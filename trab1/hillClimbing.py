@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 1: Hill Climbing
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   hillClimbing.py: implements the hill climbing metaheuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 2: Beam Search
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   beamSearch.py: implements the beam search metaheuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 5: Deepest Descent
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   deepestDescent.py: implements the deepest descent heuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

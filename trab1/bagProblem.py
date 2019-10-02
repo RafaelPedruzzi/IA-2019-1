@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Basic functions for the Bag Problem
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   bagProblem.py: Basic functions for the Bag Problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

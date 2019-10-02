@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 7: Simulated Annealing
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   simulatedAnnealing.py: implements the simulated annealing heuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

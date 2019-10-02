@@ -1,7 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Greedy Randomized Adaptive Search (GRASP)
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
+#
+#   grasp.py: implements the greedy randomized adaptive search (GRASP) heuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##

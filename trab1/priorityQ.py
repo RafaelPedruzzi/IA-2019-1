@@ -1,9 +1,9 @@
 ## -------------------------------------------------------- ##
-#   Exercise 3: Branch and Bound
+#   Trab 1 IA 2019-2
 #
 #   Rafael Belmock Pedruzzi
 #
-#   priorityQ.py: implements a simple priority queue
+#   priorityQ.py: implemets a simple priority queue
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
