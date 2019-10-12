@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   genetic.py: implements the genetic algorithm heuristic for the bag problem
+#   genetic.py: implements the genetic algorithm metaheuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -11,6 +11,7 @@
 import bagProblem as bp
 import random
 from math import floor
+from time import time
 
 # Objective function:
 def fitness(s, T, OBJs):
@@ -93,20 +94,27 @@ def generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs):
     return snew
 
 # Genetic Algorithm:
-def genetic(T, OBJs, popMaxSize, iter, crossoverRate, mutationRate):
+def genetic(T, OBJs, execTime, *args):
+    popMaxSize = args[0]
+    iter = args[1]
+    crossoverRate = args[2]
+    mutationRate = args[3]
     si = init_Population(popMaxSize, OBJs)
     bs = [0]*len(OBJs)
+    start = time()
     for _ in range(iter):
+        if time() - start > execTime:
+            break
         si = generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs)
         s = best_in_Pop(si, T, OBJs)
         if bp.state_Verify(s, T, OBJs) and bp.state_Value(s, OBJs) > bp.state_Value(bs, OBJs):
             bs = s
     return bs
 
-T = 19 # bag size
-OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
-crossoverRate = 0.8
-mutationRate = 0.2
-iter = 50 # number of generations
-popMaxSize = 20 # size of the population
-print(genetic(T,OBJs,popMaxSize,iter,crossoverRate,mutationRate))
+# T = 19 # bag size
+# OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
+# crossoverRate = 0.8
+# mutationRate = 0.2
+# iter = 50 # number of generations
+# popMaxSize = 20 # size of the population
+# print(genetic(T,OBJs,popMaxSize,iter,crossoverRate,mutationRate))

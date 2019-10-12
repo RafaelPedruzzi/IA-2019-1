@@ -10,6 +10,7 @@
 
 import bagProblem as bp
 import queue
+from time import time
 
 # Return a list with the n best states of the given state's expansion:
 def select_Best_States(n, st, T, OBJs):
@@ -24,11 +25,15 @@ def select_Best_States(n, st, T, OBJs):
     return bss[:n]
 
 # Beam Search:
-def beam_Search(T, OBJs, m):
+def beam_Search(T, OBJs, execTime, *args):
+    m = args[0]
     f = queue.Queue(m)
     f.put([0]*len(OBJs)) # starting queue with the initial state
     bs = [0]*len(OBJs)   # starting best state as initial state
+    start = time()
     while f.qsize() > 0:
+        if time() - start > execTime:
+            break
         st = f.get()
         if bp.state_Value(st, OBJs) > bp.state_Value(bs, OBJs):
             bs = st
@@ -37,6 +42,6 @@ def beam_Search(T, OBJs, m):
             f.put(i)
     return bs
 
-T = 19 # bag size
-OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
-print(beam_Search(T,OBJs,5))
+# T = 19 # bag size
+# OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
+# print(beam_Search(T,OBJs,5))

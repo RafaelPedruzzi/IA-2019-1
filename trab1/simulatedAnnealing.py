@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   simulatedAnnealing.py: implements the simulated annealing heuristic for the bag problem
+#   simulatedAnnealing.py: implements the simulated annealing metaheuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -13,6 +13,7 @@ import hillClimbing as hc
 import priorityQ as pq
 import random
 import math
+from time import time
 
 # Remove and return a random item from the given list:
 def take_Random(si):
@@ -36,9 +37,16 @@ def neightborhood(s, T, OBJs):
     return neig
 
 # Simulated Anneling:
-def sim_Annealing(T, OBJs, s, temp, alpha, iter):
+def sim_Annealing(T, OBJs, execTime, *args):
+    temp = args[0]
+    alpha = args[1]
+    iter = args[2]
+    s = hc.hill_Climbing(T, OBJs)
     bs = s # best state found
+    start = time()
     while temp > 1:
+        if time() - start > execTime:
+            break
         si = neightborhood(s, T, OBJs)
         for _ in range(iter):
             sn = take_Random(si)
@@ -55,11 +63,10 @@ def sim_Annealing(T, OBJs, s, temp, alpha, iter):
         temp *= alpha
     return bs
 
-T = 19 # bag size
-OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
-temp = 10 # initial temperature
-alpha = random.random()
-iter = 50 # number of iterations
-s = hc.hill_Climbing(T,OBJs) # starting value
+# T = 19 # bag size
+# OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
+# temp = 10 # initial temperature
+# alpha = random.random()
+# iter = 50 # number of iterations
 
-print(sim_Annealing(T,OBJs,s,temp,alpha,iter))
+# print(sim_Annealing(T,OBJs,temp,alpha,iter))

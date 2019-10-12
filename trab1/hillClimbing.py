@@ -9,6 +9,7 @@
 ## -------------------------------------------------------- ##
 
 import bagProblem as bp
+from time import time
 
 # Returns True and the valid state with the biggest value, or False if no state is valid:
 def select_Best(si, T, OBJs):
@@ -24,10 +25,13 @@ def select_Best(si, T, OBJs):
     return True, si[sn]
 
 # Hill Climbing:
-def hill_Climbing(T, OBJs):
+def hill_Climbing(T, OBJs, execTime, *args):
     sn = [0]*len(OBJs) # initial state
     c = True # continue flag
+    start = time()
     while c:
+        if time() - start > execTime:
+            break
         cs = sn # storing current state
         c, sn = select_Best(bp.state_Expansion(cs), T, OBJs)
     return cs

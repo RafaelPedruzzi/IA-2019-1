@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   grasp.py: implements the greedy randomized adaptive search (GRASP) heuristic for the bag problem
+#   grasp.py: implements the greedy randomized adaptive search (GRASP) metaheuristic for the bag problem
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -11,66 +11,70 @@
 import bagProblem as bp
 import deepestDescent as dp
 import random
+from time import time
+
+from itertools import accumulate
 
 def local_Search(T, OBJs, s):
     return dp.deepest_Descent(T, OBJs, s)
 
-def roulette(l):
+def roulette(si,OBJs):
     probRatio = [] # roulette
-    c = (0,0)
+    c = []
     # Adding values to probRatio:
-    for i in l:
-        probRatio.append(i[1])
+    for s in si:
+        probRatio.append(bp.state_Value(s,OBJs))
     # Normalizing the values:
     ratioSum = sum(probRatio)
     probRatio = [ (i/ratioSum) for i in probRatio]
     # Building the "partitions" of the roulette:
-    for i in range(len(probRatio)):
-        probRatio[i] = sum(probRatio[i:])
+    probRatio = list(accumulate(probRatio))
     # Selecting a random element:
     ratioSum = sum(probRatio)
     selector = random.random()
     for i in range(len(probRatio)):
-        if selector >= probRatio[i]:
-            c = l[i]
+        if selector <= probRatio[i]:
+            c = si[i]
             break
     return c
 
 def greedy_Random_Construct(s, numBest, T, OBJs):
-    sv = bp.state_Value(s, OBJs) # value of state s
-    additions = [0]*len(OBJs)    # list of possible additions to state s
-    best = []                    # list of best additions
-    # Each i-position of "additions" receive the maximum number of additional i-objects (object in position i of OBJs) suported by the bag:
-    for i in range(len(additions)):
-        q = 0
-        while sv + (q+1)*bp.size(OBJs[i]) < T:
-            q += 1
-        additions[i] = q
-    # Selecting the best addition:
-    while len(best) < numBest:
-        i = additions.index(max(additions)) # taking index of addition with the best value
-        if additions[i] <= 0: # breaking if there are no possible additions
-            break
-        best.append((i,additions[i])) # appending addition to best
-        additions[i] -= 1 # updating addition
-    if len(best) > 0:
-        # c = best[random.randint(0, len(best)-1)]
-        c = roulette(best)
-        s[c[0]] += c[1] # c[0] = position to update; c[1] = value to be added
-    return s
+    sn = [0]*len(OBJs)                     # initial state
+    while True:
+        additions = bp.state_Expansion(sn) # list of possible additions to state sn
+        best = []                          # list of best additions
+        # Selecting the best additions:
+        i = 0
+        while len(best) < numBest and i < len(additions):
+            if bp.state_Verify(additions[i], T, OBJs):
+                best.append(additions[i])
+                if len(best) >= len(additions):
+                    break
+            i += 1
+        if len(best) > 0:
+            c = roulette(best,OBJs)
+            sn = c
+            continue
+        break
+    return sn
 
-def grasp(T, OBJs, iter, numBest):
+def grasp(T, OBJs, execTime, *args):
+    iter = args[0]
+    numBest = args[1]
     s = [0]*len(OBJs)
     bs = s # best state found
+    start = time()
     for _ in range(iter):
+        if time() - start > execTime:
+            break
         s = greedy_Random_Construct(s, numBest, T, OBJs)
         sl = local_Search(T, OBJs, s) # local state found
         if bp.state_Verify(sl, T, OBJs) and bp.state_Value(sl, OBJs) > bp.state_Value(bs, OBJs):
             bs = sl
     return bs
 
-T = 19 # bag size
-OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
-iter = 50
-numBest = 10
-print(grasp(T,OBJs,iter,numBest))
+# T = 19 # bag size
+# OBJs = [(1,3), (4,6), (5,7)] # object list (v,t)
+# iter = 50
+# numBest = 10
+# print(grasp(T,OBJs,iter,numBest))
