@@ -14,6 +14,9 @@ import grasp              as gr
 import genetic            as ge
 
 from itertools import product, zip_longest
+from time import time
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Train problems (T, [(vi,ti)])
 TRAIN = [
@@ -84,24 +87,31 @@ TEST = [
 ]
 
 # Used metaheuristics
+HNAMES = ['Hill Climbing','Beam Search','Simulated Annealing','GRASP','Genetic']
+
 HEURISTICS = [
     # Hill Climbing
-    (   hc.hill_Climbing,
-        [[]]),
+    (   'Hill Climbing',
+        hc.hill_Climbing,
+        [[]],),
     # Beam Search
-    (   bs.beam_Search,
+    (   'Beam Search',
+        bs.beam_Search,
         [[10, 25, 50, 100]]),               # number of branches
-    # Siimulated Annealing
-    (   sa.sim_Annealing,
+    # Simulated Annealing
+    (   'Simulated Annealing',
+        sa.sim_Annealing,
         [[500, 250, 100, 90, 50],           # initial temperature
         [0.99, 0.97, 0.95, 0.9, 0.85, 0.7], # alpha value
         [50, 100, 200, 350, 500]]),         # number of iterations
     # GRASP
-    (   gr.grasp,
+    (   'GRASP',
+        gr.grasp,
         [[50, 100, 200, 350, 500],          # number of iteration
         [2, 5, 10, 15]]),                   # number of best elements
     # Genetic
-    (   ge.genetic,
+    (   'Genetic',
+        ge.genetic,
         [[10, 20, 30],                      # population size
         [50, 100, 200, 350, 500],           # number of iterations
         [0.75, 0.85,0.95],                  # crossover rate
@@ -116,32 +126,72 @@ def normalize(l):
     m = max(l)
     return [x/m for x in l]
 
-def take_Best_Configuration(par, res):
-    avarages = [sum(x)/len(x) for x in zip_longest(*res)]
+def take_Best_Configurations(par, res, tim):
+    bestResults = []
+    bestTimes = []
+    hpResults = list(zip_longest(*res))
+    hpTimes = list(zip_longest(*tim))
+    avarages = [sum(x)/len(x) for x in hpResults]
     i = avarages.index(max(avarages))
-    return par[i]
+    testPar = par[i]
+    for _ in range(10):
+        i = avarages.index(max(avarages))
+        if avarages[i] == 0:
+            break
+        bestResults.append(hpResults[i])
+        bestTimes.append(hpTimes[i])
+        avarages[i] = 0
+    return testPar, bestResults, bestTimes
+
+def genarate_Boxplot(tableName,y,yLabel,xLabel):
+    fig, bplot = plt.subplots()
+    bplot.set_title(tableName)
+    bplot.set_xlabel(xLabel)
+    bplot.set_ylabel(yLabel)
+    black_Diamond = dict(markerfacecolor='k',marker='d')
+    bplot.boxplot(y, flierprops=black_Diamond)
+    # bplot.set_xticklabels(x)
+    plt.savefig('./figs/'+tableName+'.png')
 
 def train():
-    bestParameters = []
-    for h in HEURISTICS[1:]: # for each metaheuristic
-        func = h[0]
-        parList = h[1]
+    testParameters = []
+    # hBestResults = []
+    # hBestTimes = []
+    for h in HEURISTICS[1:2]: # for each metaheuristic
+        funcName = h[0]
+        func = h[1]
+        parList = h[2]
         parameters = build_Parameters(parList)
-        results = [] # heuristic results
+        results = []     # heuristics results
+        normResults = [] # heuristics normalized results
+        execTimes = []   # heuristics execution times
         for p in TRAIN: # for each problem
             T = p[0]
             OBJs = p[1]
             r = [] # problem results
+            n = [] # problem normalazed results
+            t = [] # problem exec time
             for c in parameters: # for each configuration of hiperparameters
+                start = time()
                 ans = func(T,OBJs, 120,*c)
+                end = time()
                 r.append(bp.state_Value(ans,OBJs))
-            r = normalize(r)
-            results.append(r.copy)
-        best = take_Best_Configuration(parameters, results)
-        bestParameters.append(best)
-    return bestParameters
+                t.append(end-start)
+            n = normalize(r)
+            results.append(r.copy())
+            normResults.append(n.copy())
+            execTimes.append(t.copy())
+        testPar, bestResults, bestTimes = take_Best_Configurations(parameters, normResults, execTimes)
+        testParameters.append(testPar.copy())
+        # hBestResults.append(bestResults.copy())
+        # hBestTimes.append(bestTimes.copy())
+        genarate_Boxplot(funcName+' - Valores', bestResults, 'Valor', 'Melhores Hiperparâmetros')
+        genarate_Boxplot(funcName+' - Tempo de Execução', bestTimes, 'Tempo', 'Melhores Hiperparâmetros')
+    return testParameters
 
 # print(build_Parameters(HEURISTICS[2][1]))
 # print(normalize([1,2,3]))
-# print(take_Best_Configuration([1,2,3,4,5],[[1,1,5],[1,2,5],[1,2,5],[2,2,5],[1,1,5]]))
+# print(take_Best_Configurations([[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7]],[[1,1,5],[1,2,5],[1,2,5],[2,2,5],[1,1,5]],[[0.1,0.01,0.5],[0.1,0.2,0.05],[0.4,0.8,0.5],[0.2,0.2,0.54],[0.7,0.1,0.9]]))
+# genarate_Boxplot('Resultados Alcançados',['Beam Search','GRASP','Simulated Annealing'],[[2,4,5,7,5,4],[5,6,5],[1,10,9,35,21,2,3,8]])
+
 print(train())
