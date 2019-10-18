@@ -153,6 +153,8 @@ def genarate_Boxplot(tableName,y,yLabel,xLabel):
     # bplot.set_xticklabels(x)
     plt.savefig('./figs/'+tableName+'.png')
 
+    # sns.boxplot(data = [parciais1,parciais2], showmeans=True)
+
 def train():
     testParameters = []
     # hBestResults = []
