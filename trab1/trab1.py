@@ -213,7 +213,8 @@ def train():
             execTimes.append(t.copy())
         testPar, bestResults, bestTimes, xTickLabels = take_Best_Configurations(parameters, results, normResults, execTimes)
         testParameters.append(testPar.copy())
-        print(testPar)
+        with open('Results.txt', 'a') as file:
+            file.write(funcName+': '+str(testPar)+'\n')
         # hBestResults.append(bestResults.copy())
         # hBestTimes.append(bestTimes.copy())
         genarate_Boxplot(funcName+' - Valores', bestResults, xTickLabels, 'Valor Normalizado', 'Melhores Hiperparâmetros')
