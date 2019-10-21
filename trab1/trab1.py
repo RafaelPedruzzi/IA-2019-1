@@ -138,6 +138,8 @@ HEURISTICS = [
 # Returns a list with all possible configurations of the paremeters in parList:
 def build_Parameters(parList):
     return [list(x) for x in product(*parList)]
+    # for x in product(*parList):
+    #     yield list(x)
 
 def normalize(l):
     m = max(l)
@@ -185,7 +187,7 @@ def train():
     testParameters = []
     # hBestResults = []
     # hBestTimes = []
-    for h in HEURISTICS[1:]: # for each metaheuristic
+    for h in HEURISTICS[2:]: # for each metaheuristic
         funcName = h[0]
         func = h[1]
         parList = h[2]

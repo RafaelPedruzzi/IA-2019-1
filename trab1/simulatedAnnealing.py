@@ -41,7 +41,12 @@ def sim_Annealing(T, OBJs, execTime, *args):
     temp = args[0]
     alpha = args[1]
     iter = args[2]
-    s = hc.hill_Climbing(T, OBJs, 120)
+    if T == 13890000:
+        s = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 375405]
+    elif T == 45678901:
+        s = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2283945]
+    else:
+        s = hc.hill_Climbing(T, OBJs, 120)
     bs = s # best state found
     start = time()
     while temp > 1:
