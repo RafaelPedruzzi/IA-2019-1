@@ -96,13 +96,13 @@ def generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs):
 # Genetic Algorithm:
 def genetic(T, OBJs, execTime, *args):
     popMaxSize = args[0]
-    iter = args[1]
-    crossoverRate = args[2]
-    mutationRate = args[3]
+    niter = 500
+    crossoverRate = args[1]
+    mutationRate = args[2]
     si = init_Population(popMaxSize, OBJs)
     bs = [0]*len(OBJs)
     start = time()
-    for _ in range(iter):
+    for _ in range(niter):
         if time() - start > execTime:
             break
         si = generate_New_Pop(si, crossoverRate, mutationRate, T, OBJs)

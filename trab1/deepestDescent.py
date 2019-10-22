@@ -9,6 +9,7 @@
 ## -------------------------------------------------------- ##
 
 import bagProblem as bp
+from time import time
 
 # Returns True and the valid state with the biggest value, or False if no state is valid:
 def select_Best(si, T, OBJs):
@@ -29,21 +30,23 @@ def neightborhood(s, T, OBJs):
     for i in bp.state_Expansion(s):   # adding all valid expansions of the given state
         if bp.state_Verify(i, T, OBJs):
             neig.append(i)
-    for i in neig:                    # adding all valid retractions of each state currently in the neightborhood
-        for j in bp.state_Retract(i):
-            if bp.state_Verify(j, T, OBJs):
-                neig.append(j)
+    # for i in neig:                    # adding all valid retractions of each state currently in the neightborhood
+    #     for j in bp.state_Retract(i):
+    #         if bp.state_Verify(j, T, OBJs):
+    #             neig.append(j)
     for i in bp.state_Retract(s):     # adding all valid retractions of the given state
         if bp.state_Verify(i, T, OBJs):
             neig.append(i)
     return neig
 
 # Deepent Descent:
-def deepest_Descent(T, OBJs, s):
+def deepest_Descent(T, OBJs, s, startTime, execTime):
     bs = s # best state found
     si = neightborhood(s, T, OBJs)
     c = True # continue flag
     while c:
+        if time() - startTime > execTime:
+            break
         c, sn = select_Best(si, T, OBJs)
         if bp.state_Value(sn, OBJs) > bp.state_Value(bs, OBJs):
             bs = sn

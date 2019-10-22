@@ -113,7 +113,6 @@ HEURISTICS = [
     (   'Genetic',
         ge.genetic,
         [[10, 20, 30],             # population size
-        [50, 100, 200, 350, 500],  # number of iterations
         [0.75, 0.85,0.95],         # crossover rate
         [0.10, 0.20, 0.30]])       # mutation rate
 ]
@@ -166,28 +165,20 @@ def take_Best_Configurations(par, res, norm, tim):
     return testPar, bestResults, bestTimes, spars
 
 def genarate_Boxplot(tableName,data,xTickLabels,yLabel,xLabel):
-    # fig, bplot = plt.subplots()
-    # bplot.set_title(tableName)
-    # bplot.set_xlabel(xLabel)
-    # bplot.set_ylabel(yLabel)
-    # black_Diamond = dict(markerfacecolor='k',marker='d')
-    # bplot.boxplot(y, flierprops=black_Diamond)
-    # # bplot.set_xticklabels(x)
-    # plt.savefig('./figs/'+tableName+'.png')
-
-    # print(tableName+':\n', data)
-
-    plt.figure()
+    plt.rc('font', size=6)
+    fig = plt.figure()
+    fig.set_size_inches(8, 6)
     bp = sns.boxplot(data=data,showmeans=True)
     bp.set(xlabel=xLabel,ylabel=yLabel)
     bp.set_xticklabels(xTickLabels)
+    plt.setp(bp.get_xticklabels(), rotation=45)
     plt.savefig('./figs/'+tableName+'.png')
 
 def train():
     testParameters = []
     # hBestResults = []
     # hBestTimes = []
-    for h in HEURISTICS[2:]: # for each metaheuristic
+    for h in HEURISTICS[3:4]: # for each metaheuristic
         funcName = h[0]
         func = h[1]
         parList = h[2]
@@ -227,5 +218,9 @@ def train():
 # genarate_Boxplot('Resultados Alcançados',['Beam Search','GRASP','Simulated Annealing'],[[2,4,5,7,5,4],[5,6,5],[1,10,9,35,21,2,3,8]])
 
 print(train())
+
+# par = build_Parameters(HEURISTICS[3][2])
+# for c in par:
+#     print(bp.state_Size(gr.grasp(TRAIN[8][0],TRAIN[8][1],120,*c),TRAIN[8][1]), bp.state_Value(gr.grasp(TRAIN[8][0],TRAIN[8][1],120,*c),TRAIN[8][1]))
 
 # def test():

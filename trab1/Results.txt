@@ -1,1 +1,2 @@
 Beam Search: [10]
+Simulated Annealing: [500, 0.95, 500]

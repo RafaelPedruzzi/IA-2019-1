@@ -15,8 +15,8 @@ from time import time
 
 from itertools import accumulate
 
-def local_Search(T, OBJs, s):
-    return dp.deepest_Descent(T, OBJs, s)
+def local_Search(T, OBJs, s, startTime, execTime):
+    return dp.deepest_Descent(T, OBJs, s, startTime, execTime)
 
 def roulette(si,OBJs):
     probRatio = [] # roulette
@@ -38,9 +38,11 @@ def roulette(si,OBJs):
             break
     return c
 
-def greedy_Random_Construct(s, numBest, T, OBJs):
+def greedy_Random_Construct(s, numBest, T, OBJs, start, execTime):
     sn = [0]*len(OBJs)                     # initial state
     while True:
+        if time() - start > execTime:
+            break
         additions = bp.state_Expansion(sn) # list of possible additions to state sn
         best = []                          # list of best additions
         # Selecting the best additions:
@@ -59,16 +61,16 @@ def greedy_Random_Construct(s, numBest, T, OBJs):
     return sn
 
 def grasp(T, OBJs, execTime, *args):
-    iter = args[0]
+    niter = args[0]
     numBest = args[1]
     s = [0]*len(OBJs)
     bs = s # best state found
     start = time()
-    for _ in range(iter):
+    for _ in range(niter):
         if time() - start > execTime:
             break
-        s = greedy_Random_Construct(s, numBest, T, OBJs)
-        sl = local_Search(T, OBJs, s) # local state found
+        s = greedy_Random_Construct(s, numBest, T, OBJs, start, execTime)
+        sl = local_Search(T, OBJs, s, start, execTime) # local state found
         if bp.state_Verify(sl, T, OBJs) and bp.state_Value(sl, OBJs) > bp.state_Value(bs, OBJs):
             bs = sl
     return bs

@@ -27,10 +27,10 @@ def neightborhood(s, T, OBJs):
     for i in bp.state_Expansion(s): # add all valid states from the expansion of the given state
         if bp.state_Verify(i, T, OBJs):
             neig.append(i)
-    for i in neig:                    # adding all valid retractions of each state currently in the neightborhood
-        for j in bp.state_Retract(i):
-            if bp.state_Verify(j, T, OBJs):
-                neig.append(j)
+    # for i in neig:                    # adding all valid retractions of each state currently in the neightborhood
+    #     for j in bp.state_Retract(i):
+    #         if bp.state_Verify(j, T, OBJs):
+    #             neig.append(j)
     for i in bp.state_Retract(s): # add all valid states from the retraction of the given state
         if bp.state_Verify(i, T, OBJs):
             neig.append(i)
@@ -40,28 +40,24 @@ def neightborhood(s, T, OBJs):
 def sim_Annealing(T, OBJs, execTime, *args):
     temp = args[0]
     alpha = args[1]
-    iter = args[2]
-    if T == 13890000:
-        s = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 375405]
-    elif T == 45678901:
-        s = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2283945]
-    else:
-        s = hc.hill_Climbing(T, OBJs, 120)
+    niter = args[2]
+    s = [0]*len(OBJs)
     bs = s # best state found
     start = time()
     while temp > 1:
         if time() - start > execTime:
             break
         si = neightborhood(s, T, OBJs)
-        for _ in range(iter):
+        for _ in range(niter):
             sn = take_Random(si)
-            if bp.state_Value(sn, OBJs) > bp.state_Value(s, OBJs):
+            oValue = bp.state_Value(sn, OBJs)
+            if oValue > bp.state_Value(s, OBJs):
                 s = sn
                 si = neightborhood(s, T, OBJs) # updating neightborhood
-                if bp.state_Value(sn, OBJs) > bp.state_Value(bs, OBJs):
+                if oValue > bp.state_Value(bs, OBJs):
                     bs = sn
             else:
-                p = math.exp((bp.state_Value(sn, OBJs) - bp.state_Value(s, OBJs))/temp)
+                p = math.exp((oValue - bp.state_Value(s, OBJs))/temp)
                 if random.random() < p:
                     s = sn
                     si = neightborhood(s, T, OBJs) # updating neightborhood
