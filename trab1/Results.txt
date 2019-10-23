@@ -1,2 +1,3 @@
 Beam Search: [10]
 Simulated Annealing: [500, 0.95, 500]
+Genetic: [20, 0.75, 0.3]

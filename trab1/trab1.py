@@ -23,72 +23,89 @@ from statistics import mean, stdev
 TRAIN = [
     # P1
     (   19,
-        [(1,3),(4,6),(5,7)]),
+        [(1,3),(4,6),(5,7)],
+        'P1'),
     # P3
     (   58,
-        [(1,3),(4,6),(5,7),(3,4)]),
+        [(1,3),(4,6),(5,7),(3,4)],
+        'P3'),
     # P4
     (   58,
-        [(1,3),(4,6),(5,7),(3,4),(8,10),(4,8),(3,5),(6,9)]),
+        [(1,3),(4,6),(5,7),(3,4),(8,10),(4,8),(3,5),(6,9)],
+        'P4'),
     # P6
     (   58,
-        [(1,3),(4,6),(5,7),(3,4),(8,10),(4,8),(3,5),(6,9),(2,1)]),
+        [(1,3),(4,6),(5,7),(3,4),(8,10),(4,8),(3,5),(6,9),(2,1)],
+        'P6'),
     # P8
     (   120,
-        [(1,2),(2,3),(4,5),(5,10),(14,15),(15,20),(24,25),(29,30),(50,50)]),
+        [(1,2),(2,3),(4,5),(5,10),(14,15),(15,20),(24,25),(29,30),(50,50)],
+        'P8'),
     # P9
     (   120,
-        [(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)]),
+        [(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)],
+        'P9'),
     # P11
     (   120,
-        [(24,25),(29,30),(50,50)]),
+        [(24,25),(29,30),(50,50)],
+        'P11'),
     # P14
     (   138,
-        [(1,3),(4,6),(5,7),(3,4),(2,6),(2,3),(6,8),(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)]),
+        [(1,3),(4,6),(5,7),(3,4),(2,6),(2,3),(6,8),(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)],
+        'P14'),
     # P17
     (   13890000,
-        [(1,3),(4,6),(5,7),(3,4),(2,6),(2,3),(6,8),(1,2),(3,5),(7,10),(10,15),(13,20),(24,25),(29,37)]),
+        [(1,3),(4,6),(5,7),(3,4),(2,6),(2,3),(6,8),(1,2),(3,5),(7,10),(10,15),(13,20),(24,25),(29,37)],
+        'P17'),
     # P20
     (   45678901,
-        [(1,3),(4,6),(5,7),(3,4),(2,6),(1,2),(3,5),(7,10),(10,15),(13,20),(15,20)])
+        [(1,3),(4,6),(5,7),(3,4),(2,6),(1,2),(3,5),(7,10),(10,15),(13,20),(15,20)],
+        'P20')
 ]
 
 # Test problems (T, [(vi,ti)])
 TEST = [
     # P2
     (   192,
-        [(1,3),(4,6),(5,7)]),
+        [(1,3),(4,6),(5,7)],
+        'P2'),
     # P5
     (   287,
-        [(1,2),(2,3),(3,4),(4,5),(5,6),(6,7),(7,8),(8,9),(9,10)]),
+        [(1,2),(2,3),(3,4),(4,5),(5,6),(6,7),(7,8),(8,9),(9,10)],
+        'P5'),
     # P7
     (   120,
-        [(1,2),(2,3),(4,5),(5,10),(14,15),(13,20),(24,25),(29,30),(50,50)]),
+        [(1,2),(2,3),(4,5),(5,10),(14,15),(13,20),(24,25),(29,30),(50,50)],
+        'P7'),
     # P10
     (   1240,
-        [(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)]),
+        [(1,2),(2,3),(3,5),(7,10),(10,15),(13,20),(24,25),(29,30),(50,50)],
+        'P10'),
     # P12
     (   104,
-        [(25,26),(29,30),(49,50)]),
+        [(25,26),(29,30),(49,50)],
+        'P12'),
     # P13
     (   138,
-        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8)]),
+        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8)],
+        'P13'),
     # P15
     (   13890,
-        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8), (1,2), (2,3), (3,5), (7,10), (10,15), (13,20), (24,25),(29,30), (50,50)]),
+        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8), (1,2), (2,3), (3,5), (7,10), (10,15), (13,20), (24,25),(29,30), (50,50)],
+        'P15'),
     # P16
     (   13890,
-        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8), (1,2),(3,5),(7,10),(10,15),(13,20),(24,25),(29,37)]),
+        [(1,3),(4,6),(5,7),(3,4), (2,6), (2,3), (6,8), (1,2),(3,5),(7,10),(10,15),(13,20),(24,25),(29,37)],
+        'P16'),
     # P18
     (   190000,
-        [(1,3),(4,6),(5,7)]),
+        [(1,3),(4,6),(5,7)],
+        'P18'),
     # P19
     (   4567,
-        [(1,3),(4,6),(5,7),(3,4),(2,6),(1,2),(3,5),(7,10),(10,15),(13,20),(15,20)])
+        [(1,3),(4,6),(5,7),(3,4),(2,6),(1,2),(3,5),(7,10),(10,15),(13,20),(15,20)],
+        'P19')
 ]
-
-# Used metaheuristics
-HNAMES = ['Hill Climbing','Beam Search','Simulated Annealing','GRASP','Genetic']
 
 HEURISTICS = [
     # Hill Climbing
@@ -120,7 +137,7 @@ HEURISTICS = [
         [[10, 20, 30],             # population size
         [0.75, 0.85,0.95],         # crossover rate
         [0.10, 0.20, 0.30]],       # mutation rate
-        [])                        # test parameters
+        [20, 0.75, 0.3])           # test parameters
 ]
 
 # Returns a list with all possible configurations of the paremeters in parList:
@@ -165,8 +182,6 @@ def genarate_Boxplot(tableName,data,xTickLabels,yLabel,xLabel):
 
 def train():
     testParameters = []
-    # hBestResults = []
-    # hBestTimes = []
     for h in HEURISTICS[4:]: # for each metaheuristic
         funcName = h[0]
         func = h[1]
@@ -195,30 +210,29 @@ def train():
         testParameters.append(testPar.copy())
         with open('Results.txt', 'a') as file:
             file.write(funcName+': '+str(testPar)+'\n')
-        # hBestResults.append(bestResults.copy())
-        # hBestTimes.append(bestTimes.copy())
         genarate_Boxplot(funcName+' - Valores', bestResults, xTickLabels, 'Valor Normalizado', 'Melhores Hiperparâmetros')
         genarate_Boxplot(funcName+' - Tempo de Execução', bestTimes, xTickLabels, 'Tempo (segundos)', 'Melhores Hiperparâmetros')
     return testParameters
 
-# print(build_Parameters(HEURISTICS[2][1]))
-# print(normalize([1,2,3]))
-# print(take_Best_Configurations([[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7]],[[1,1,5],[1,2,5],[1,2,5],[2,2,5],[1,1,5]],[[0.1,0.01,0.5],[0.1,0.2,0.05],[0.4,0.8,0.5],[0.2,0.2,0.54],[0.7,0.1,0.9]]))
-# genarate_Boxplot('Resultados Alcançados',['Beam Search','GRASP','Simulated Annealing'],[[2,4,5,7,5,4],[5,6,5],[1,10,9,35,21,2,3,8]])
+def normalizeAvrAndStDev(avr,sdv):
+    probAvr = list(zip_longest(*avr))
+    probSdv = list(zip_longest(*sdv))
+    normAvr = [normalize(x) for x in probAvr]
+    normSdv = [normalize(x) for x in probSdv]
+    return normAvr, normSdv
 
-# print(train())
-
-par = build_Parameters(HEURISTICS[4][2])
-for c in par:
-    print(bp.state_Size(ge.genetic(TRAIN[6][0],TRAIN[6][1],120,*c),TRAIN[6][1]), bp.state_Value(ge.genetic(TRAIN[6][0],TRAIN[6][1],120,*c),TRAIN[6][1]))
+def generateLatexTable(names,avr,sdv,normavr,normsdv,timeavg,timesdv):
+    return
 
 def test():
-    avr = []     # heuristic's avarages
-    stDevs = []  # heuristic's standard deviations
-    normAvr = [] # heuristic's normalized avarages
-    normSD = []  # heuristic's normalized standard deviations
-    timeAvr = [] # heuristic's execution times avarages
-    timeSD = []  # heuristic's execution times standard deviations
+    results = []   # heuristics results
+    execTimes = [] # heuristics execution times
+    avr = []       # heuristic's avarages
+    sdv = []       # heuristic's standard deviations
+    normAvr = []   # heuristic's normalized avarages
+    normSdv = []   # heuristic's normalized standard deviations
+    timeAvr = []   # heuristic's execution times avarages
+    timeSdv = []   # heuristic's execution times standard deviations
     for h in HEURISTICS: # for each metaheuristic
         funcName = h[0]
         func = h[1]
@@ -233,10 +247,24 @@ def test():
             end = time()
             r.append(bp.state_Value(ans,OBJs))
             t.append(end-start)
+        results.append(r.copy())
+        execTimes.append(t.copy())
         avr.append(mean(r))
-        stDevs.append(stdev(r))
+        sdv.append(stdev(r))
         timeAvr.append(mean(t))
-        timeSD.append(stdev(t))
-    # normAvr = normalize(avr)
-    # normSD = normalize(stDevs)
+        timeSdv.append(stdev(t))
+    names = [x[0] for x in HEURISTICS]
+    genarate_Boxplot(funcName+' Teste - Valores', results, names, 'Valor', 'Meta-Heurística')
+    genarate_Boxplot(funcName+' Teste - Tempo de Execução', execTimes, names, 'Tempo (segundos)', 'Meta-Heurística')
+    normAvr, normSdv = normalizeAvrAndStDev(avr, sdv)
+    generateLatexTable(names,avr,sdv,normAvr,normSdv,timeAvr,timeSdv)
+
+
+# print(train())
+
+# par = build_Parameters(HEURISTICS[4][2])
+# prob = TRAIN[7]
+# for c in par:
+#     ans = ge.genetic(prob[0],prob[1],120,*c)
+#     print(bp.state_Size(ans,prob[1]), bp.state_Value(ans,prob[1]))
 

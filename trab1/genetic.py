@@ -29,13 +29,13 @@ def best_in_Pop(si, T, OBJs):
 
 # Returns a initial population:
 def init_Population(popMaxSize, OBJs):
-    pop = []
+    pop = [[0]*len(OBJs)]
     for _ in range(popMaxSize):
-        s = []
-        for i in range(len(OBJs)):
-            v = floor(bp.size(OBJs[i]) * random.random())
-            s.append(v)
-        random.shuffle(s)
+        s = pop[len(pop)-1].copy()
+        s = mutation(s)
+        if bp.state_Value(s,OBJs) == 0:
+            p = random.randint(0, len(s)-1)
+            s[p] += 1
         pop.append(s)
     return pop
 
@@ -116,5 +116,5 @@ def genetic(T, OBJs, execTime, *args):
 # crossoverRate = 0.8
 # mutationRate = 0.2
 # iter = 50 # number of generations
-# popMaxSize = 20 # size of the population
+# popMaxSize = 10 # size of the population
 # print(genetic(T,OBJs,popMaxSize,iter,crossoverRate,mutationRate))
