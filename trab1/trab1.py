@@ -17,6 +17,7 @@ from itertools import product, zip_longest
 from time import time
 import seaborn as sns
 import matplotlib.pyplot as plt
+from statistics import mean, stdev
 
 # Train problems (T, [(vi,ti)])
 TRAIN = [
@@ -93,46 +94,34 @@ HEURISTICS = [
     # Hill Climbing
     (   'Hill Climbing',
         hc.hill_Climbing,
-        [[]],),
+        [[]],
+        []),                       # test parameters
     # Beam Search
     (   'Beam Search',
         bs.beam_Search,
-        [[10, 25, 50, 100]]),      # number of branches
+        [[10, 25, 50, 100]],       # number of branches
+        [10]),                     # test parameters
     # Simulated Annealing
     (   'Simulated Annealing',
         sa.sim_Annealing,
         [[500, 100, 50],           # initial temperature
         [0.95, 0.85, 0.7],         # alpha value
-        [350, 500]]),              # number of iterations
+        [350, 500]],               # number of iterations
+        [500, 0.95, 500]),         # test parameters
     # GRASP
     (   'GRASP',
         gr.grasp,
         [[50, 100, 200, 350, 500], # number of iteration
-        [2, 5, 10, 15]]),          # number of best elements
+        [2, 5, 10, 15]],           # number of best elements
+        []),                       # test parameters
     # Genetic
     (   'Genetic',
         ge.genetic,
         [[10, 20, 30],             # population size
         [0.75, 0.85,0.95],         # crossover rate
-        [0.10, 0.20, 0.30]])       # mutation rate
+        [0.10, 0.20, 0.30]],       # mutation rate
+        [])                        # test parameters
 ]
-
-# TEST_PARAM = [
-#     # Beam Search
-#     [10],      # number of branches
-#     # Simulated Annealing
-#     [,          # initial temperature
-#      ,          # alpha value
-#      ],         # number of iterations
-#     # GRASP
-#     [,          # number of iteration
-#      ],         # number of best elements
-#     # Genetic
-#         [,      # population size
-#          ,      # number of iterations
-#          ,      # crossover rate
-#          ]      # mutation rate
-# ]
 
 # Returns a list with all possible configurations of the paremeters in parList:
 def build_Parameters(parList):
@@ -178,7 +167,7 @@ def train():
     testParameters = []
     # hBestResults = []
     # hBestTimes = []
-    for h in HEURISTICS[3:4]: # for each metaheuristic
+    for h in HEURISTICS[4:]: # for each metaheuristic
         funcName = h[0]
         func = h[1]
         parList = h[2]
@@ -186,12 +175,12 @@ def train():
         results = []     # heuristics results
         normResults = [] # heuristics normalized results
         execTimes = []   # heuristics execution times
-        for p in TRAIN: # for each problem
+        for p in TRAIN: # for each train problem
             T = p[0]
             OBJs = p[1]
             r = [] # problem results
-            n = [] # problem normalazed results
-            t = [] # problem exec time
+            n = [] # problem normalized results
+            t = [] # problem execution time
             for c in parameters: # for each configuration of hiperparameters
                 start = time()
                 ans = func(T,OBJs, 120,*c)
@@ -217,10 +206,37 @@ def train():
 # print(take_Best_Configurations([[1,2,3],[2,3,4],[3,4,5],[4,5,6],[5,6,7]],[[1,1,5],[1,2,5],[1,2,5],[2,2,5],[1,1,5]],[[0.1,0.01,0.5],[0.1,0.2,0.05],[0.4,0.8,0.5],[0.2,0.2,0.54],[0.7,0.1,0.9]]))
 # genarate_Boxplot('Resultados Alcançados',['Beam Search','GRASP','Simulated Annealing'],[[2,4,5,7,5,4],[5,6,5],[1,10,9,35,21,2,3,8]])
 
-print(train())
+# print(train())
 
-# par = build_Parameters(HEURISTICS[3][2])
-# for c in par:
-#     print(bp.state_Size(gr.grasp(TRAIN[8][0],TRAIN[8][1],120,*c),TRAIN[8][1]), bp.state_Value(gr.grasp(TRAIN[8][0],TRAIN[8][1],120,*c),TRAIN[8][1]))
+par = build_Parameters(HEURISTICS[4][2])
+for c in par:
+    print(bp.state_Size(ge.genetic(TRAIN[6][0],TRAIN[6][1],120,*c),TRAIN[6][1]), bp.state_Value(ge.genetic(TRAIN[6][0],TRAIN[6][1],120,*c),TRAIN[6][1]))
 
-# def test():
+def test():
+    avr = []     # heuristic's avarages
+    stDevs = []  # heuristic's standard deviations
+    normAvr = [] # heuristic's normalized avarages
+    normSD = []  # heuristic's normalized standard deviations
+    timeAvr = [] # heuristic's execution times avarages
+    timeSD = []  # heuristic's execution times standard deviations
+    for h in HEURISTICS: # for each metaheuristic
+        funcName = h[0]
+        func = h[1]
+        par = h[3]       
+        r = [] # problens results
+        t = [] # problens execution time
+        for p in TEST:   # for each test problem
+            T = p[0]
+            OBJs = p[1]
+            start = time()
+            ans = func(T,OBJs, 300,*par)
+            end = time()
+            r.append(bp.state_Value(ans,OBJs))
+            t.append(end-start)
+        avr.append(mean(r))
+        stDevs.append(stdev(r))
+        timeAvr.append(mean(t))
+        timeSD.append(stdev(t))
+    # normAvr = normalize(avr)
+    # normSD = normalize(stDevs)
+
