@@ -214,25 +214,49 @@ def train():
         genarate_Boxplot(funcName+' - Tempo de Execução', bestTimes, xTickLabels, 'Tempo (segundos)', 'Melhores Hiperparâmetros')
     return testParameters
 
-def normalizeAvrAndStDev(avr,sdv):
-    probAvr = list(zip_longest(*avr))
-    probSdv = list(zip_longest(*sdv))
-    normAvr = [normalize(x) for x in probAvr]
-    normSdv = [normalize(x) for x in probSdv]
-    return normAvr, normSdv
+def crossNormalize(l):
+    lx = list(zip_longest(*l))
+    normx = [normalize(x) for x in lx]
+    norm = list(zip_longest(*normx))
+    return norm
 
 def generateLatexTable(names,avr,sdv,normavr,normsdv,timeavg,timesdv):
     return
 
+def rank(l):
+    tam = len(l)
+    sort = sorted(l,reverse=True)
+    r = []
+    for i in range(tam):
+        if i > 0 and sort[i] == sort[i-1]:
+            (r[len(r)-1]).append(i+1)
+        else:
+            r.append( [i+1] )
+    ranked = [] # NEED TO BE SOME KIND OF TUPLE!!
+    for x in r:
+        ranked = ranked + ([mean(x)]*len(x))
+    ranked = [(ranked[i],l.index(sort[i])) for i in range(tam)]
+    unsortRanked = [0]*tam
+    for i in range(tam):
+        unsortRanked[i] = ranked[sort.index(l[i])]
+    return ranked, unsortRanked
+
+def avgRank():
+    return
+
+def normRank():
+    return
+
 def test():
-    results = []   # heuristics results
-    execTimes = [] # heuristics execution times
-    avr = []       # heuristic's avarages
-    sdv = []       # heuristic's standard deviations
-    normAvr = []   # heuristic's normalized avarages
-    normSdv = []   # heuristic's normalized standard deviations
-    timeAvr = []   # heuristic's execution times avarages
-    timeSdv = []   # heuristic's execution times standard deviations
+    results = []     # heuristics results
+    normResults = [] # heuristics normalized results
+    execTimes = []   # heuristics execution times
+    avr = []         # heuristics avarages
+    sdv = []         # heuristics standard deviations
+    normAvr = []     # normalized heuristics avarages
+    normSdv = []     # normalized heuristics standard deviations
+    timeAvr = []     # heuristics execution times avarages
+    timeSdv = []     # heuristics execution times standard deviations
     for h in HEURISTICS: # for each metaheuristic
         funcName = h[0]
         func = h[1]
@@ -254,13 +278,18 @@ def test():
         timeAvr.append(mean(t))
         timeSdv.append(stdev(t))
     names = [x[0] for x in HEURISTICS]
-    genarate_Boxplot(funcName+' Teste - Valores', results, names, 'Valor', 'Meta-Heurística')
+    normResults = crossNormalize(results) # normalizing problens results
+    normAvr = [mean(x) for x in normResults]
+    normSdv = [stdev(x) for x in normResults]
+
+    genarate_Boxplot(funcName+' Teste - Valores', normResults, names, 'Valor', 'Meta-Heurística')
     genarate_Boxplot(funcName+' Teste - Tempo de Execução', execTimes, names, 'Tempo (segundos)', 'Meta-Heurística')
-    normAvr, normSdv = normalizeAvrAndStDev(avr, sdv)
     generateLatexTable(names,avr,sdv,normAvr,normSdv,timeAvr,timeSdv)
 
 
 # print(train())
+# l = [7,4,7,12,7]
+# print(rank(l))
 
 # par = build_Parameters(HEURISTICS[4][2])
 # prob = TRAIN[7]
