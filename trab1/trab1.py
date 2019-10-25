@@ -130,7 +130,7 @@ HEURISTICS = [
         gr.grasp,
         [[50, 100, 200, 350, 500], # number of iteration
         [2, 5, 10, 15]],           # number of best elements
-        []),                       # test parameters
+        [500,15]),                 # test parameters
     # Genetic
     (   'Genetic',
         ge.genetic,
@@ -232,14 +232,14 @@ def rank(l):
             (r[len(r)-1]).append(i+1)
         else:
             r.append( [i+1] )
-    ranked = [] # NEED TO BE SOME KIND OF TUPLE!!
+    ranked = []
     for x in r:
         ranked = ranked + ([mean(x)]*len(x))
-    ranked = [(ranked[i],l.index(sort[i])) for i in range(tam)]
     unsortRanked = [0]*tam
     for i in range(tam):
         unsortRanked[i] = ranked[sort.index(l[i])]
-    return ranked, unsortRanked
+    mapRanked = [(ranked[i],l.index(sort[i])) for i in range(tam)]
+    return mapRanked, unsortRanked
 
 def avgRank():
     return
