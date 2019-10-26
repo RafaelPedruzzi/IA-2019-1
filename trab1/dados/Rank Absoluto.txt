@@ -1,0 +1,11 @@
+\begin{tabular}{rl}
+\hline
+   Média das Colocações & Meta-heurística     \\
+\hline
+        1.7  & Beam Search         \\
+        2.1  & Hill Climbing       \\
+        2.8  & Simulated Annealing \\
+        3.55 & GRASP               \\
+        4.85 & Genetic             \\
+\hline
+\end{tabular}

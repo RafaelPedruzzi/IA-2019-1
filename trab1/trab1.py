@@ -18,6 +18,8 @@ from time import time
 import seaborn as sns
 import matplotlib.pyplot as plt
 from statistics import mean, stdev
+import numpy as np
+import tabulate
 
 # Train problems (T, [(vi,ti)])
 TRAIN = [
@@ -137,7 +139,7 @@ HEURISTICS = [
         [[10, 20, 30],             # population size
         [0.75, 0.85,0.95],         # crossover rate
         [0.10, 0.20, 0.30]],       # mutation rate
-        [20, 0.75, 0.3])           # test parameters
+        [30, 0.95, 0.3])           # test parameters
 ]
 
 # Returns a list with all possible configurations of the paremeters in parList:
@@ -220,7 +222,18 @@ def crossNormalize(l):
     norm = list(zip_longest(*normx))
     return norm
 
-def generateLatexTable(names,avr,sdv,normavr,normsdv,timeavg,timesdv):
+def generateLatexTable(pars,headers,fileName,zipPar=True):
+    tabulate.LATEX_ESCAPE_RULES={}
+    table = []
+    if zipPar:
+        l = list(zip_longest(*pars))
+    else:
+        l = pars
+    for i in l:
+        table.append(i)
+    latexTable = tabulate.tabulate(table, headers=headers, tablefmt='latex')
+    with open('dados/'+fileName+'.txt', 'w') as file:
+        file.write(latexTable)
     return
 
 def rank(l):
@@ -238,13 +251,36 @@ def rank(l):
     unsortRanked = [0]*tam
     for i in range(tam):
         unsortRanked[i] = ranked[sort.index(l[i])]
-    mapRanked = [(ranked[i],l.index(sort[i])) for i in range(tam)]
+    nl = np.array(l)
+    positions = []
+    for i in sort:
+        ii = np.where(nl == i)[0]
+        positions = positions + list(ii)
+    positions =  list(dict.fromkeys(positions))
+    mapRanked = [(ranked[i],positions[i]) for i in range(tam)]
     return mapRanked, unsortRanked
 
-def avgRank():
+def avgRank(results):
+    ranks = []
+    for l in list(zip_longest(*results)):
+        _, r = rank(l)
+        ranks.append(r)
+    means = []
+    for r in list(zip_longest(*ranks)):
+        means.append(mean(r))
+    table = [ [means[i],HEURISTICS[i][0]] for i in range(len(means)) ]
+    table = sorted(table)
+    headers = ['Colocação','Meta-heurística']
+    name = 'Rank Absoluto'
+    generateLatexTable(table,headers,name,False)
     return
 
-def normRank():
+def normRank(normAvr):
+    ranks, _ = rank(normAvr)
+    table = [ [x,HEURISTICS[i][0]] for (x,i) in ranks ]
+    headers = ['Colocação','Meta-heurística']
+    name = 'Rank Normalizado'
+    generateLatexTable(table,headers,name,False)
     return
 
 def test():
@@ -281,15 +317,16 @@ def test():
     normResults = crossNormalize(results) # normalizing problens results
     normAvr = [mean(x) for x in normResults]
     normSdv = [stdev(x) for x in normResults]
+    genarate_Boxplot(' Teste - Valores', normResults, names, 'Valor', 'Meta-Heurística')
+    genarate_Boxplot(' Teste - Tempo de Execução', execTimes, names, 'Tempo (segundos)', 'Meta-Heurística')
+    headers = ['Meta-heurística','Média Absoluta','Desvio Padrão Absoluto','Média Normalizada','Desvio Padrão Normalizado','Média do Tempo de Execução','Desvio Padrão do Tempo de Execução']
+    generateLatexTable([names,avr,sdv,normAvr,normSdv,timeAvr,timeSdv],headers,'Tabela')
+    avgRank(results)
+    normRank(normAvr)
+    return
 
-    genarate_Boxplot(funcName+' Teste - Valores', normResults, names, 'Valor', 'Meta-Heurística')
-    genarate_Boxplot(funcName+' Teste - Tempo de Execução', execTimes, names, 'Tempo (segundos)', 'Meta-Heurística')
-    generateLatexTable(names,avr,sdv,normAvr,normSdv,timeAvr,timeSdv)
 
-
-# print(train())
-# l = [7,4,7,12,7]
-# print(rank(l))
+test()
 
 # par = build_Parameters(HEURISTICS[4][2])
 # prob = TRAIN[7]
