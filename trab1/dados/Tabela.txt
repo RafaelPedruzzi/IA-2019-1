@@ -1,0 +1,11 @@
+\begin{tabular}{lrrrrrr}
+\hline
+ Meta-heurística     &   Média Absoluta &   Desvio Padrão Absoluto &   Média Normalizada &   Desvio Padrão Normalizado &   Média do Tempo de Execução &   Desvio Padrão do Tempo de Execução \\
+\hline
+ Hill Climbing       &          16585.8 &                42153.3   &            0.994156 &                  0.0104257  &                    0.0329266 &                            0.0793335 \\
+ Beam Search         &          16587   &                42153     &            0.996216 &                  0.00901768 &                    0.540079  &                            1.42405   \\
+ Simulated Annealing &           6671.6 &                11816.8   &            0.899053 &                  0.220843   &                    2.59157   &                            2.03883   \\
+ GRASP               &          14514.8 &                36971     &            0.925687 &                  0.0643098  &                   45.5957    &                           81.1236    \\
+ Genetic             &            410.6 &                  421.799 &            0.524955 &                  0.4327     &                    1.89799   &                            0.748277  \\
+\hline
+\end{tabular}

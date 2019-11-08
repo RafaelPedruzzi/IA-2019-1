@@ -1,0 +1,11 @@
+\begin{tabular}{rl}
+\hline
+   Colocação & Meta-heurística     \\
+\hline
+           1 & Beam Search         \\
+           2 & Hill Climbing       \\
+           3 & GRASP               \\
+           4 & Simulated Annealing \\
+           5 & Genetic             \\
+\hline
+\end{tabular}
