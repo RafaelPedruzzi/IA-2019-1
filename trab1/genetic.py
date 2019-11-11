@@ -29,11 +29,11 @@ def best_in_Pop(si, T, OBJs):
 
 # Returns a initial population:
 def init_Population(popMaxSize, OBJs):
-    pop = [[0]*len(OBJs)]
+    pop = [[0]*len(OBJs)] # insert initial state
     for _ in range(popMaxSize):
-        s = pop[len(pop)-1].copy()
+        s = pop[len(pop)-1].copy() # get last added state
         s = mutation(s)
-        if bp.state_Value(s,OBJs) == 0:
+        if bp.state_Value(s,OBJs) == 0: # for safity, empty states are not added
             p = random.randint(0, len(s)-1)
             s[p] += 1
         pop.append(s)

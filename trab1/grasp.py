@@ -18,6 +18,7 @@ from itertools import accumulate
 def local_Search(T, OBJs, s, startTime, execTime):
     return dp.deepest_Descent(T, OBJs, s, startTime, execTime)
 
+# Implements the roulette random selection method:
 def roulette(si,OBJs):
     probRatio = [] # roulette
     c = []
@@ -38,6 +39,7 @@ def roulette(si,OBJs):
             break
     return c
 
+# First part of the GRASP algorithm:
 def greedy_Random_Construct(s, numBest, T, OBJs, start, execTime):
     sn = [0]*len(OBJs)                     # initial state
     while True:
@@ -47,12 +49,14 @@ def greedy_Random_Construct(s, numBest, T, OBJs, start, execTime):
         best = []                          # list of best additions
         # Selecting the best additions:
         i = 0
+        # add states to best until best is full or there are no more states:
         while len(best) < numBest and i < len(additions):
             if bp.state_Verify(additions[i], T, OBJs):
                 best.append(additions[i])
                 if len(best) >= len(additions):
                     break
             i += 1
+        # if best is not empty chose a state by the roulette method:
         if len(best) > 0:
             c = roulette(best,OBJs)
             sn = c
@@ -60,6 +64,7 @@ def greedy_Random_Construct(s, numBest, T, OBJs, start, execTime):
         break
     return sn
 
+# GRASP
 def grasp(T, OBJs, execTime, *args):
     niter = args[0]
     numBest = args[1]

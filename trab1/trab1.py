@@ -111,58 +111,57 @@ TEST = [
 
 HEURISTICS = [
     # Hill Climbing
-    (   'Hill Climbing',
-        hc.hill_Climbing,
-        [[]],
+    (   'Hill Climbing',           # heuristic name
+        hc.hill_Climbing,          # heuristic function
+        [[]],                      # hiperparameters
         []),                       # test parameters
     # Beam Search
-    (   'Beam Search',
-        bs.beam_Search,
+    (   'Beam Search',             # heuristic name
+        bs.beam_Search,            # heuristic function
         [[10, 25, 50, 100]],       # number of branches
         [10]),                     # test parameters
     # Simulated Annealing
-    (   'Simulated Annealing',
-        sa.sim_Annealing,
+    (   'Simulated Annealing',     # heuristic name
+        sa.sim_Annealing,          # heuristic function
         [[500, 100, 50],           # initial temperature
         [0.95, 0.85, 0.7],         # alpha value
         [350, 500]],               # number of iterations
         [500, 0.95, 500]),         # test parameters
     # GRASP
-    (   'GRASP',
-        gr.grasp,
+    (   'GRASP',                   # heuristic name
+        gr.grasp,                  # heuristic function
         [[50, 100, 200, 350, 500], # number of iteration
         [2, 5, 10, 15]],           # number of best elements
-        [500,15]),                 # test parameters
+        [500, 15]),                # test parameters
     # Genetic
-    (   'Genetic',
-        ge.genetic,
+    (   'Genetic',                 # heuristic name
+        ge.genetic,                # heuristic function
         [[10, 20, 30],             # population size
         [0.75, 0.85,0.95],         # crossover rate
         [0.10, 0.20, 0.30]],       # mutation rate
         [30, 0.95, 0.3])           # test parameters
 ]
 
-# Returns a list with all possible configurations of the paremeters in parList:
+# Returns a list with all possible configurations of the parameters in parList:
 def build_Parameters(parList):
     return [list(x) for x in product(*parList)]
-    # for x in product(*parList):
-    #     yield list(x)
 
+# normalize a list of numbers:
 def normalize(l):
     m = max(l)
     return [x/m for x in l]
 
+# select the bests hiperparameters configurations:
 def take_Best_Configurations(par, res, norm, tim):
-    bestResults = []
-    bestTimes = []
-    spars = []
-    # hpResults = list(zip_longest(*res))
-    hpNormResults = list(zip_longest(*norm))
-    hpTimes = list(zip_longest(*tim))
-    avarages = [sum(x)/len(x) for x in hpNormResults]
+    bestResults = [] # list with 10 best hiperparameters configuration
+    bestTimes = []   # execution times of the 10 best hiperparameters configuration
+    spars = []       # the 10 best hiperparameters converted to string
+    hpNormResults = list(zip_longest(*norm)) # agrouping parameter by problem
+    hpTimes = list(zip_longest(*tim))        # agrouping execution times by problem
+    avarages = [mean(x) for x in hpNormResults] # calculating avarage of each configuration
     i = avarages.index(max(avarages))
-    testPar = par[i]
-    for _ in range(10):
+    testPar = par[i] # best hiperparameter configuration
+    for _ in range(10): # taking 10 best configurations
         i = avarages.index(max(avarages))
         if avarages[i] == 0:
             break
@@ -172,19 +171,22 @@ def take_Best_Configurations(par, res, norm, tim):
         avarages[i] = 0
     return testPar, bestResults, bestTimes, spars
 
+# generate and save a boxplot in a file:
 def genarate_Boxplot(tableName,data,xTickLabels,yLabel,xLabel):
-    plt.rc('font', size=6)
-    fig = plt.figure()
-    fig.set_size_inches(8, 6)
+    plt.rc('font', size=6) # setting figure configuration
+    fig = plt.figure()  # creating a new figure
+    fig.set_size_inches(8, 6) # setting figure size
+    # genarating boxplot
     bp = sns.boxplot(data=data,showmeans=True)
     bp.set(xlabel=xLabel,ylabel=yLabel)
     bp.set_xticklabels(xTickLabels)
     plt.setp(bp.get_xticklabels(), rotation=45)
-    plt.savefig('./figs/'+tableName+'.png')
+    plt.savefig('./figs/'+tableName+'.png') # saving figure in a PNG file
 
+# train algorithm:
 def train():
     testParameters = []
-    for h in HEURISTICS[4:]: # for each metaheuristic
+    for h in HEURISTICS: # for each metaheuristic
         funcName = h[0]
         func = h[1]
         parList = h[2]
@@ -202,26 +204,30 @@ def train():
                 start = time()
                 ans = func(T,OBJs, 120,*c)
                 end = time()
-                r.append(bp.state_Value(ans,OBJs))
-                t.append(end-start)
-            n = normalize(r)
-            results.append(r.copy())
-            normResults.append(n.copy())
-            execTimes.append(t.copy())
+                r.append(bp.state_Value(ans,OBJs)) # saving result
+                t.append(end-start)                # saving execution time
+            n = normalize(r) # normalizing results
+            results.append(r.copy())     # saving problem results
+            normResults.append(n.copy()) # saving problem normalized results
+            execTimes.append(t.copy())   # saving problem execution time
         testPar, bestResults, bestTimes, xTickLabels = take_Best_Configurations(parameters, results, normResults, execTimes)
         testParameters.append(testPar.copy())
+        # saving best parameter in a file:
         with open('Results.txt', 'a') as file:
             file.write(funcName+': '+str(testPar)+'\n')
-        genarate_Boxplot(funcName+' - Valores', bestResults, xTickLabels, 'Valor Normalizado', 'Melhores Hiperparâmetros')
-        genarate_Boxplot(funcName+' - Tempo de Execução', bestTimes, xTickLabels, 'Tempo (segundos)', 'Melhores Hiperparâmetros')
+        # printing boxplots:
+        genarate_Boxplot(funcName+'_-_Valores', bestResults, xTickLabels, 'Valor Normalizado', 'Melhores Hiperparâmetros')
+        genarate_Boxplot(funcName+'_-_Tempo_de_Execução', bestTimes, xTickLabels, 'Tempo (segundos)', 'Melhores Hiperparâmetros')
     return testParameters
 
+# normalize the i-elements of every list in a list of lists of numbers:
 def crossNormalize(l):
     lx = list(zip_longest(*l))
     normx = [normalize(x) for x in lx]
     norm = list(zip_longest(*normx))
     return norm
 
+# creates a LaTeX formated table and save it on a file:
 def generateLatexTable(pars,headers,fileName,zipPar=True):
     tabulate.LATEX_ESCAPE_RULES={}
     table = []
@@ -236,23 +242,28 @@ def generateLatexTable(pars,headers,fileName,zipPar=True):
         file.write(latexTable)
     return
 
+# rank a list of numbers:
 def rank(l):
     tam = len(l)
     sort = sorted(l,reverse=True)
-    r = []
+    r = [] # auxiliar that agrupates repeted values
+    ranked = [] # ranks in crescent order
+    unsortRanked = [0]*tam # ranks in original l list's order
+    positions = [] # auxiliar that keeps the original index of the ranked values
+    # grouping repeted values:
     for i in range(tam):
         if i > 0 and sort[i] == sort[i-1]:
             (r[len(r)-1]).append(i+1)
         else:
             r.append( [i+1] )
-    ranked = []
+    # building rank where equal values get (sum of ranks ocuped by this values / number of values):
     for x in r:
         ranked = ranked + ([mean(x)]*len(x))
-    unsortRanked = [0]*tam
+    # building unsortRanked:
     for i in range(tam):
         unsortRanked[i] = ranked[sort.index(l[i])]
     nl = np.array(l)
-    positions = []
+    # mapping ranked values:
     for i in sort:
         ii = np.where(nl == i)[0]
         positions = positions + list(ii)
@@ -260,29 +271,33 @@ def rank(l):
     mapRanked = [(ranked[i],positions[i]) for i in range(tam)]
     return mapRanked, unsortRanked
 
+# makes the avarage of the ranks of the results list and save it on a file:
 def avgRank(results):
+    # making list of ranks:
     ranks = []
     for l in list(zip_longest(*results)):
         _, r = rank(l)
         ranks.append(r)
+    # calculating avarage of the ranks:
     means = []
     for r in list(zip_longest(*ranks)):
         means.append(mean(r))
+    # printing rank as table on file
     table = [ [means[i],HEURISTICS[i][0]] for i in range(len(means)) ]
     table = sorted(table)
     headers = ['Colocação','Meta-heurística']
     name = 'Rank Absoluto'
     generateLatexTable(table,headers,name,False)
-    return
 
+# make the rank of a list of the normalized avarages and save it on a file:
 def normRank(normAvr):
     ranks, _ = rank(normAvr)
     table = [ [x,HEURISTICS[i][0]] for (x,i) in ranks ]
     headers = ['Colocação','Meta-heurística']
     name = 'Rank Normalizado'
     generateLatexTable(table,headers,name,False)
-    return
 
+# test algorithm:
 def test():
     results = []     # heuristics results
     normResults = [] # heuristics normalized results
@@ -317,20 +332,15 @@ def test():
     normResults = crossNormalize(results) # normalizing problens results
     normAvr = [mean(x) for x in normResults]
     normSdv = [stdev(x) for x in normResults]
+    # saving boxplots:
     genarate_Boxplot(' Teste - Valores', normResults, names, 'Valor', 'Meta-Heurística')
     genarate_Boxplot(' Teste - Tempo de Execução', execTimes, names, 'Tempo (segundos)', 'Meta-Heurística')
     headers = ['Meta-heurística','Média Absoluta','Desvio Padrão Absoluto','Média Normalizada','Desvio Padrão Normalizado','Média do Tempo de Execução','Desvio Padrão do Tempo de Execução']
+    # saving table:
     generateLatexTable([names,avr,sdv,normAvr,normSdv,timeAvr,timeSdv],headers,'Tabela')
+    # making and saving ranks:
     avgRank(results)
     normRank(normAvr)
-    return
 
-
+train()
 test()
-
-# par = build_Parameters(HEURISTICS[4][2])
-# prob = TRAIN[7]
-# for c in par:
-#     ans = ge.genetic(prob[0],prob[1],120,*c)
-#     print(bp.state_Size(ans,prob[1]), bp.state_Value(ans,prob[1]))
-
