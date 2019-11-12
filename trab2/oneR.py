@@ -19,8 +19,13 @@ from sklearn.metrics import confusion_matrix
 from itertools import product, zip_longest
 
 class OneR(BaseEstimator, ClassifierMixin):
-    # def __init__(self, demo_param='demo'):
-    #     self.demo_param = demo_param
+    def __init__(self):
+        self.X_              #
+        self.y_              #
+        self.r_              #
+        self.classes_        #
+        self.kbd_            #
+        self.class_selector_ #
     
     # def get_params(self, deep=True):
     #     return super().get_params(deep)
@@ -38,11 +43,9 @@ class OneR(BaseEstimator, ClassifierMixin):
         self.X_ = X
         self.kbd_ = kbd
 
-        X_t = X.T
-
         cm_list = []
         hits = []
-        for i in X_t:
+        for i in X.T:
             cm = contingency_matrix(i, y)
             cm_list.append(cm)
             hits.append(sum(max(k) for k in cm))
@@ -51,11 +54,11 @@ class OneR(BaseEstimator, ClassifierMixin):
         self.r_ = rule
 
         rule_cm = cm_list[rule]
-        classifier_dict = {}
-        for i, c in enumerate(rule_cm):
+        class_selector = []
+        for i, c in enumerate(rule_cm.T):
             p = np.argmax(c)
-            classifier_dict[p] = i
-        self.classifier_dict_ = classifier_dict
+            class_selector.append(p)
+        self.class_selector_ = class_selector
 
         # Return the classifier
         return self
@@ -71,7 +74,7 @@ class OneR(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X[:,self.r_]:
-            y.append(self.classifier_dict_[int(i)])
+            y.append(self.class_selector_[int(i)])
 
         return y
 
