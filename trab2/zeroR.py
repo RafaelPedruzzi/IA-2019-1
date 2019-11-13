@@ -14,8 +14,11 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 
 class ZeroR(BaseEstimator, ClassifierMixin):
-    # def __init__(self, demo_param='demo'):
-    #     self.demo_param = demo_param
+    def __init__(self):
+        self.X_              = [] # data
+        self.y_              = [] # data classes
+        self.r_              = [] # chosen classification rule
+        self.classes_        = [] # classes names
 
     def fit(self, X, y):
         # check that x and y have correct shape

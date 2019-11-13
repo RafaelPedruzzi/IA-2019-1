@@ -20,12 +20,12 @@ from itertools import product, zip_longest
 
 class OneR(BaseEstimator, ClassifierMixin):
     def __init__(self):
-        self.X_              #
-        self.y_              #
-        self.r_              #
-        self.classes_        #
-        self.kbd_            #
-        self.class_selector_ #
+        self.X_              = [] # discretized data
+        self.y_              = [] # data classes
+        self.r_              = [] # chosen classification rule
+        self.classes_        = [] # classes names
+        self.kbd_            = [] # data discretizer
+        self.class_selector_ = [] # classificator
     
     # def get_params(self, deep=True):
     #     return super().get_params(deep)
@@ -55,9 +55,9 @@ class OneR(BaseEstimator, ClassifierMixin):
 
         rule_cm = cm_list[rule]
         class_selector = []
-        for i, c in enumerate(rule_cm.T):
+        for i, c in enumerate(rule_cm):
             p = np.argmax(c)
-            class_selector.append(p)
+            class_selector.append(self.classes_[p])
         self.class_selector_ = class_selector
 
         # Return the classifier
@@ -79,16 +79,16 @@ class OneR(BaseEstimator, ClassifierMixin):
         return y
 
 
-from sklearn import datasets
-from sklearn.model_selection import train_test_split, cross_val_score
-from sklearn.metrics import f1_score
+# from sklearn import datasets
+# from sklearn.model_selection import train_test_split, cross_val_score
+# from sklearn.metrics import f1_score
 
-nn= OneR()
-iris = datasets.load_iris()
-x_train,x_test,y_train,y_test = train_test_split(iris.data,iris.target,test_size = 0.4, random_state = 0)
-nn.fit(x_train, y_train)
-y_pred = nn.predict(x_test)
-print(y_test)
-print(y_pred)
-score = cross_val_score(nn, x_train, y_train, cv = 5)
-print(score)
+# nn= OneR()
+# iris = datasets.load_iris()
+# x_train,x_test,y_train,y_test = train_test_split(iris.data,iris.target,test_size = 0.4, random_state = 0)
+# nn.fit(x_train, y_train)
+# y_pred = nn.predict(x_test)
+# print(y_test)
+# print(y_pred)
+# score = cross_val_score(nn, x_train, y_train, cv = 5)
+# print(score)
