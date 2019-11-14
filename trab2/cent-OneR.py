@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   oneR.py: implementation of the OneR classifier.
+#   cent-OneR.py: implementation of the Centroid OneR classifier.
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -17,8 +17,10 @@ from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.metrics.cluster import contingency_matrix
 from sklearn.metrics import confusion_matrix
 from itertools import product, zip_longest
+from statistics import mean
+from scipy.spatial.distance import cdist
 
-class OneR(BaseEstimator, ClassifierMixin):
+class Centroid_OneR(BaseEstimator, ClassifierMixin):
 
     def __init__(self):
         self.X_              = [] # discretized data
@@ -26,7 +28,16 @@ class OneR(BaseEstimator, ClassifierMixin):
         self.r_              = [] # chosen classification rule
         self.classes_        = [] # classes' names
         self.kbd_            = [] # data discretizer
-        self.class_selector_ = [] # classifier
+        self.centroids_ = [] # classes' centroids
+
+    def __centroid(self, xs):
+        centroid = []
+        for i in np.array(xs).T:
+            centroid.append(mean(i))
+        return centroid
+
+    def __closest_node_index(self, node, nodes):
+        return cdist([node], nodes).argmin()
 
     def fit(self, X, y):
         # check that x and y have correct shape
@@ -37,13 +48,13 @@ class OneR(BaseEstimator, ClassifierMixin):
         self.y_ = y
 
         kbd = KBinsDiscretizer(n_bins = len(np.unique(y)), encode='ordinal')
-        X = kbd.fit_transform(X)
-        self.X_ = X
+        dX = kbd.fit_transform(X) # discretized X
+        self.X_ = dX
         self.kbd_ = kbd
 
         cm_list = []
         hits = []
-        for i in X.T:
+        for i in dX.T:
             cm = contingency_matrix(i, y)
             cm_list.append(cm)
             hits.append(sum(max(k) for k in cm))
@@ -56,7 +67,17 @@ class OneR(BaseEstimator, ClassifierMixin):
         for i, c in enumerate(rule_cm):
             p = np.argmax(c)
             class_selector.append(self.classes_[p])
-        self.class_selector_ = class_selector
+
+        ny = []
+        for i in dX[:,rule]:
+            ny.append(class_selector[int(i)])
+
+        centroids = []
+        xy = list(zip_longest(X,ny))
+        for i in range(len(np.unique(ny))):
+            c = [t[0] for t in xy if t[1] == i] # all elements of class i
+            centroids.append(self.__centroid(c))
+        self.centroids_ = centroids
 
         # Return the classifier
         return self
@@ -68,12 +89,10 @@ class OneR(BaseEstimator, ClassifierMixin):
         # Input validation
         X = check_array(X)
 
-        X = self.kbd_.transform(X)
-
         y = []
-        for i in X[:,self.r_]:
-            y.append(self.class_selector_[int(i)])
-
+        for i in X:
+            c = self.__closest_node_index(i,self.centroids_)
+            y.append(self.classes_[c])
         return y
 
 
@@ -81,8 +100,8 @@ class OneR(BaseEstimator, ClassifierMixin):
 # from sklearn.model_selection import train_test_split, cross_val_score
 # from sklearn.metrics import f1_score
 
-# nn= OneR()
-# iris = datasets.load_iris()
+# nn= Centroid_OneR()
+# iris = datasets.load_breast_cancer()
 # x_train,x_test,y_train,y_test = train_test_split(iris.data,iris.target,test_size = 0.4, random_state = 0)
 # nn.fit(x_train, y_train)
 # y_pred = nn.predict(x_test)

@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   oneR.py: implementation of the OneR classifier.
+#   prob-OneR.py: implementation of the probabilistic OneR classifier.
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -16,9 +16,10 @@ from sklearn.metrics import euclidean_distances
 from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.metrics.cluster import contingency_matrix
 from sklearn.metrics import confusion_matrix
-from itertools import product, zip_longest
+from itertools import product, zip_longest, accumulate
+from random import random
 
-class OneR(BaseEstimator, ClassifierMixin):
+class Prob_OneR(BaseEstimator, ClassifierMixin):
 
     def __init__(self):
         self.X_              = [] # discretized data
@@ -54,8 +55,11 @@ class OneR(BaseEstimator, ClassifierMixin):
         rule_cm = cm_list[rule]
         class_selector = []
         for i, c in enumerate(rule_cm):
-            p = np.argmax(c)
-            class_selector.append(self.classes_[p])
+            cSum = sum(c)
+            probRatio = [ (i/cSum) for i in c]
+            # Building the "partitions" of the roulette:
+            probRatio = list(accumulate(probRatio))
+            class_selector.append(probRatio)
         self.class_selector_ = class_selector
 
         # Return the classifier
@@ -72,8 +76,13 @@ class OneR(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X[:,self.r_]:
-            y.append(self.class_selector_[int(i)])
-
+            probRatio = self.class_selector_[int(i)]
+            # Selecting a random element:
+            selector = random()
+            for i in range(len(probRatio)):
+                if selector <= probRatio[i]:
+                    y.append(self.classes_[i])
+                    break
         return y
 
 
@@ -81,7 +90,7 @@ class OneR(BaseEstimator, ClassifierMixin):
 # from sklearn.model_selection import train_test_split, cross_val_score
 # from sklearn.metrics import f1_score
 
-# nn= OneR()
+# nn= Prob_OneR()
 # iris = datasets.load_iris()
 # x_train,x_test,y_train,y_test = train_test_split(iris.data,iris.target,test_size = 0.4, random_state = 0)
 # nn.fit(x_train, y_train)
