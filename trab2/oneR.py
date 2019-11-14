@@ -20,13 +20,8 @@ from itertools import product, zip_longest
 
 class OneR(BaseEstimator, ClassifierMixin):
 
-    def __init__(self):
-        self.X_              = [] # discretized data
-        self.y_              = [] # data classes
-        self.r_              = [] # chosen classification rule
-        self.classes_        = [] # classes' names
-        self.kbd_            = [] # data discretizer
-        self.class_selector_ = [] # classifier
+    def __init__(self, demo_param='demo'):
+        self.demo_param = demo_param
 
     def fit(self, X, y):
         # check that x and y have correct shape
@@ -56,7 +51,7 @@ class OneR(BaseEstimator, ClassifierMixin):
         for i, c in enumerate(rule_cm):
             p = np.argmax(c)
             class_selector.append(self.classes_[p])
-        self.class_selector_ = class_selector
+        self.class_selector = class_selector
 
         # Return the classifier
         return self
@@ -72,7 +67,7 @@ class OneR(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X[:,self.r_]:
-            y.append(self.class_selector_[int(i)])
+            y.append(self.class_selector[int(i)])
 
         return y
 

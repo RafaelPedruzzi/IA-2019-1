@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   cent-OneR.py: implementation of the Centroid OneR classifier.
+#   centOneR.py: implementation of the Centroid OneR classifier.
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -22,13 +22,7 @@ from scipy.spatial.distance import cdist
 
 class Centroid_OneR(BaseEstimator, ClassifierMixin):
 
-    def __init__(self):
-        self.X_              = [] # discretized data
-        self.y_              = [] # data classes
-        self.r_              = [] # chosen classification rule
-        self.classes_        = [] # classes' names
-        self.kbd_            = [] # data discretizer
-        self.centroids_ = [] # classes' centroids
+    # def __init__(self):
 
     def __centroid(self, xs):
         centroid = []
@@ -77,7 +71,7 @@ class Centroid_OneR(BaseEstimator, ClassifierMixin):
         for i in range(len(np.unique(ny))):
             c = [t[0] for t in xy if t[1] == i] # all elements of class i
             centroids.append(self.__centroid(c))
-        self.centroids_ = centroids
+        self.centroids = centroids
 
         # Return the classifier
         return self
@@ -91,7 +85,7 @@ class Centroid_OneR(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X:
-            c = self.__closest_node_index(i,self.centroids_)
+            c = self.__closest_node_index(i,self.centroids)
             y.append(self.classes_[c])
         return y
 

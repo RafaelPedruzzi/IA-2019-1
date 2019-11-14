@@ -15,11 +15,8 @@ from sklearn.utils.multiclass import unique_labels
 
 class ZeroR(BaseEstimator, ClassifierMixin):
 
-    def __init__(self):
-        self.X_       = [] # data
-        self.y_       = [] # data classes
-        self.r_       = [] # chosen classification rule
-        self.classes_ = [] # classes' names
+    # def __init__(self):
+    #     self.r_ = r
 
     def fit(self, X, y):
         # check that x and y have correct shape

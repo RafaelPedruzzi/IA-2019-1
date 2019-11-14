@@ -19,11 +19,8 @@ from scipy.spatial.distance import cdist
 
 class Centroid(BaseEstimator, ClassifierMixin):
 
-    def __init__(self):
-        self.X_         = [] # data
-        self.y_         = [] # data classes
-        self.classes_   = [] # classes' names
-        self.centroids_ = [] # classes' centroids
+    def __init__(self, demo_param='demo'):
+        self.demo_param = demo_param
 
     def __centroid(self, xs):
         centroid = []
@@ -48,7 +45,7 @@ class Centroid(BaseEstimator, ClassifierMixin):
         for i in range(len(np.unique(y))):
             c = [t[0] for t in xy if t[1] == i] # all elements of class i
             centroids.append(self.__centroid(c))
-        self.centroids_ = centroids
+        self.centroids = centroids
 
         # Return the classifier
         return self
@@ -62,7 +59,7 @@ class Centroid(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X:
-            c = self.__closest_node_index(i,self.centroids_)
+            c = self.__closest_node_index(i,self.centroids)
             y.append(self.classes_[c])
         return y
 

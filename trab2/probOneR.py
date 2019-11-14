@@ -3,7 +3,7 @@
 #
 #   Rafael Belmock Pedruzzi
 #
-#   prob-OneR.py: implementation of the probabilistic OneR classifier.
+#   probOneR.py: implementation of the probabilistic OneR classifier.
 #
 #   Python version: 3.7.4
 ## -------------------------------------------------------- ##
@@ -21,13 +21,8 @@ from random import random
 
 class Prob_OneR(BaseEstimator, ClassifierMixin):
 
-    def __init__(self):
-        self.X_              = [] # discretized data
-        self.y_              = [] # data classes
-        self.r_              = [] # chosen classification rule
-        self.classes_        = [] # classes' names
-        self.kbd_            = [] # data discretizer
-        self.class_selector_ = [] # classifier
+    def __init__(self, demo_param='demo'):
+        self.demo_param = demo_param
 
     def fit(self, X, y):
         # check that x and y have correct shape
@@ -60,7 +55,7 @@ class Prob_OneR(BaseEstimator, ClassifierMixin):
             # Building the "partitions" of the roulette:
             probRatio = list(accumulate(probRatio))
             class_selector.append(probRatio)
-        self.class_selector_ = class_selector
+        self.class_selector = class_selector
 
         # Return the classifier
         return self
@@ -76,7 +71,7 @@ class Prob_OneR(BaseEstimator, ClassifierMixin):
 
         y = []
         for i in X[:,self.r_]:
-            probRatio = self.class_selector_[int(i)]
+            probRatio = self.class_selector[int(i)]
             # Selecting a random element:
             selector = random()
             for i in range(len(probRatio)):
