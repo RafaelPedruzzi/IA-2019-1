@@ -14,18 +14,14 @@ from sklearn.utils.validation import check_X_y, check_array,check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 from sklearn.metrics import euclidean_distances
 from itertools import zip_longest
-from statistics import mean
 from scipy.spatial.distance import cdist
 
 class Centroid(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
-
     def __centroid(self, xs):
         centroid = []
         for i in np.array(xs).T:
-            centroid.append(mean(i))
+            centroid.append(np.mean(i))
         return centroid
 
     def __closest_node_index(self, node, nodes):

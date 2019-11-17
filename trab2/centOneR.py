@@ -17,21 +17,25 @@ from sklearn.preprocessing import KBinsDiscretizer
 from sklearn.metrics.cluster import contingency_matrix
 from sklearn.metrics import confusion_matrix
 from itertools import product, zip_longest
-from statistics import mean
-from scipy.spatial.distance import cdist
+from scipy.spatial.distance import euclidean
 
 class Centroid_OneR(BaseEstimator, ClassifierMixin):
-
-    # def __init__(self):
 
     def __centroid(self, xs):
         centroid = []
         for i in np.array(xs).T:
-            centroid.append(mean(i))
+            centroid.append(np.mean(i))
         return centroid
 
     def __closest_node_index(self, node, nodes):
-        return cdist([node], nodes).argmin()
+        # return cdist([node], nodes).argmin()
+        dist = []
+        for i in nodes:
+            if i == []:
+                dist.append(-1)
+            else:
+                dist.append(euclidean(node,i))
+        return np.argmin([x for x in dist if x >= 0])
 
     def fit(self, X, y):
         # check that x and y have correct shape

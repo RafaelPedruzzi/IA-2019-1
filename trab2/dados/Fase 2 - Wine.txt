@@ -1,0 +1,10 @@
+\begin{tabular}{lrr}
+\hline
+ Classificador   &   Média das Acurácias &   DP das Acurácias \\
+\hline
+ Knn             &              0.708925 &          0.124287  \\
+ Decision\_Tree   &              0.866925 &          0.0710022 \\
+ MLP             &              0.495135 &          0.167857  \\
+ Random\_Forest   &              0.983333 &          0.0254588 \\
+\hline
+\end{tabular}

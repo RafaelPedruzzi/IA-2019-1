@@ -1,0 +1,12 @@
+\begin{tabular}{lrr}
+\hline
+ Classificador      &   Média das Acurácias &   DP das Acurácias \\
+\hline
+ ZeroR              &              0.101274 &          0.0012744 \\
+ OneR               &              0.248686 &          0.024544  \\
+ Probabilistic\_OneR &              0.181861 &          0.0276901 \\
+ Centroid           &              0.88361  &          0.0411268 \\
+ Centroid\_OneR      &              0.117155 &          0.0295675 \\
+ GaussianNB         &              0.810354 &          0.0566554 \\
+\hline
+\end{tabular}

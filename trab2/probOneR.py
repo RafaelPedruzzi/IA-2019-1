@@ -21,9 +21,6 @@ from random import random
 
 class Prob_OneR(BaseEstimator, ClassifierMixin):
 
-    def __init__(self, demo_param='demo'):
-        self.demo_param = demo_param
-
     def fit(self, X, y):
         # check that x and y have correct shape
         X, y = check_X_y(X,y)
